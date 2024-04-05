@@ -13,6 +13,8 @@ def get_weather(api_key, city_name):
     weather_data = response.json()
     
     if weather_data['cod'] == 200:
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(f"Aktuelle Wetterabfrage am {current_time}")
         print(f"Wetter in {city_name}:")
         print(f"Temperatur: {weather_data['main']['temp']}°C")
         print(f"Luftdruck: {weather_data['main']['pressure']} hPa")
