@@ -6,22 +6,7 @@ import time
 from pymongo.mongo_client import MongoClient
 import numpy as np
 
-# MongoDB connection URI
-uri = "mongodb+srv://weather:erhwLLotcHI8PTxj@weatherdata.zebph6n.mongodb.net/?retryWrites=true&w=majority&appName=WeatherData"
-
-# Create a new client and connect to the server
-client = MongoClient(uri)
-
-# Check if MongoDB connections are successful
-try:
-    client.admin.command('ping')
-    print("Successfully connected to MongoDB!")
-except Exception as e:
-    print("Failed to connect to MongoDB:", e)
-
-# Select the specific databases and collections
-db = client["BA"]
-collection = db["WeatherData"]
+from mongodb_connection import connect_mongodb
 
 # Function to load CSV data from file path
 def load_csv_data(filepath):
@@ -95,8 +80,12 @@ def main():
         print(merged_df.head())
 
         records = merged_df.to_dict(orient='records')
-        collection.insert_many(records)
-        print("Exported to MongoDB")
+        db, collection = connect_mongodb()
+        if db is not None and collection is not None:
+            # Konvertierung des DataFrame zu Dictionary und Speicherung in MongoDB
+            collection.insert_many(records)
+            print("Wetterdaten erfolgreich in MongoDB gespeichert.")
+        
         current_time = datetime.now()
         formatted_time = current_time.strftime("%H:%M:%S")
         print("Current time is:", formatted_time)
