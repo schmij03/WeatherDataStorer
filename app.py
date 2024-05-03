@@ -22,7 +22,7 @@ def get_regions():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('frontend\src\templates\index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
