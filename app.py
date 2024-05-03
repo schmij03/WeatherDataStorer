@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from mongodb_connection import connect_mongodb  # Dies importiert Ihre Verbindungsfunktion
 
 app = Flask(__name__)
