@@ -1,12 +1,21 @@
 from flask import Flask, jsonify, request, render_template
-from mongodb_connection import connect_mongodb  # Dies importiert Ihre Verbindungsfunktion
+from backend.DataGathering.mongodb_connection import connect_mongodb  # Dies importiert Ihre Verbindungsfunktion
 
 app = Flask(__name__)
 
 @app.route('/api/stations')
 def get_stations():
+    station_name = request.args.get('station')  # Nimmt den station-Parameter aus der Query-URL
+    if not station_name:
+        return jsonify({"error": "No station specified"}), 400  # Fehlermeldung, wenn keine station angegeben ist
     db, collection = connect_mongodb()  # Verwendet die Verbindungsfunktion, um die Datenbank und Kollektion zu erhalten
-    stations = list(collection.find({}, {'_id': 0}))  # Exclude the _id field
+    # Aggregations-Pipeline
+    pipeline = [
+        {"$match": {"Ort": station_name}}  # Filtert Dokumente nach dem spezifizierten Ort
+         {"$project": {"_id": 0}}
+    ]
+
+    stations = list(collection.aggregate(pipeline))
     return jsonify(stations)
 
 @app.route('/api/region_data')
@@ -19,7 +28,8 @@ def get_data_by_region():
 
     # Aggregations-Pipeline
     pipeline = [
-        {"$match": {"region": region_name}}  # Filtert Dokumente nach der spezifizierten Region
+        {"$match": {"Region": region_name}}  # Filtert Dokumente nach der spezifizierten Region
+         {"$project": {"_id": 0}}
     ]
 
     region_data = list(collection.aggregate(pipeline))
