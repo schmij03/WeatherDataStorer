@@ -44,7 +44,7 @@ def add_canton(df, stations_df):
 def main():
     # URLs for CSV files
     weather_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-aktuell/VQHA80.csv'
-    stations_desc = 'Stationsbeschreibungen.csv' 
+    stations_desc = 'backend\DataGathering\GeoAdmin\Stationsbeschreibungen.csv' 
     rain_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-aktuell/VQHA98.csv'
 
     # Fetch data
@@ -80,11 +80,11 @@ def main():
         print(merged_df.head())
 
         records = merged_df.to_dict(orient='records')
-        db, collection = connect_mongodb()
-        if db is not None and collection is not None:
-            # Konvertierung des DataFrame zu Dictionary und Speicherung in MongoDB
-            collection.insert_many(records)
-            print("Wetterdaten erfolgreich in MongoDB gespeichert.")
+        # db, collection = connect_mongodb()
+        # if db is not None and collection is not None:
+        #     # Konvertierung des DataFrame zu Dictionary und Speicherung in MongoDB
+        #     collection.insert_many(records)
+        #     print("Wetterdaten erfolgreich in MongoDB gespeichert.")
         
         current_time = datetime.now()
         formatted_time = current_time.strftime("%H:%M:%S")
