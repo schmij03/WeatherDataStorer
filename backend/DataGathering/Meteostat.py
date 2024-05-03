@@ -3,17 +3,6 @@ import pandas as pd
 from meteostat import Stations, Hourly
 from mongodb_connection import connect_mongodb
 
-def get_wind_direction(degrees):
-    """
-    Converts wind direction from degrees to cardinal directions.
-    """
-    directions = [
-        "N", "NNO", "NO", "ONO", "O", "OSO", "SO", "SSO",
-        "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
-    ]
-    index = round(degrees / 22.5) % 16
-    return directions[index]
-
 def fetch_stations(region):
     """
     Fetches all stations for a specified region using the meteostat API.
@@ -21,12 +10,7 @@ def fetch_stations(region):
     stations = Stations()
     return stations.region(region).fetch()
 
-def load_weather_conditions(path):
-    """
-    Loads weather conditions from a CSV file into a dictionary.
-    """
-    df = pd.read_csv(path)
-    return dict(zip(df['Code'], df['Wetterbedingung']))
+
 
 def fetch_weather_data(stations, start_date, end_date):
     """
@@ -34,24 +18,22 @@ def fetch_weather_data(stations, start_date, end_date):
     """
     all_weather_data = pd.DataFrame()
     stations = stations.reset_index()
-    condition_dict = load_weather_conditions("backend\DataGathering\ConditionCodesMeteoStat.csv")
+    
     for index, station in stations.iterrows():
         hourly_data = Hourly(station['id'], start_date, end_date).fetch()
         if not hourly_data.empty:
-            process_station_data(hourly_data, station, condition_dict)
+            process_station_data(hourly_data, station)
             all_weather_data = pd.concat([all_weather_data, hourly_data])
         else:
             print(f"No data available for station {station['id']}")
     return all_weather_data
 
-def process_station_data(data, station, condition_dict):
+def process_station_data(data, station):
     """
     Processes and enhances station data with additional details and mapping.
     """
     data.reset_index(inplace=True)
     data['time'] = pd.to_datetime(data['time'])
-    data['wdir'] = data['wdir'].apply(get_wind_direction)
-    data['coco'] = data['coco'].map(condition_dict)
     data.rename(columns={
         'coco': 'Wetterbedingung',
         'time': 'Zeit',
