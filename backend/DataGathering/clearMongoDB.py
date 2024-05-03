@@ -24,8 +24,8 @@ db = client["BA"]
 collection = db["WeatherData"]
 
 # Lösche alle Dokumente in der Sammlung
-result = collection.delete_many({})
+result = collection.drop()
 
 # Überprüfen, ob die Löschung erfolgreich war
-print(f"{result.deleted_count} Dokument(e) gelöscht.")
+print("Collection gelöscht.")
 
