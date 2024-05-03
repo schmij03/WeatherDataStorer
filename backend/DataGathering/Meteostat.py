@@ -67,8 +67,8 @@ def process_station_data(data, station, condition_dict):
         'tsun': 'Sonneneinstrahlungsdauer'
     }, inplace=True)
     data['station_id'] = station['id']
-    data['name'] = station['Ort']
-    data['region'] = station['Region']
+    data['Ort'] = station['name']
+    data['Region'] = station['region']
 
 def save_to_mongodb(data):
     """
@@ -81,7 +81,8 @@ def save_to_mongodb(data):
 
 swiss_stations = fetch_stations("CH")
 start_date = datetime(2023, 1, 1)
-end_date = datetime(2024, 5, 3, 12, 00, 00)
+end_date = datetime(2024, 5, 3, 16, 00, 00)
 weather_data = fetch_weather_data(swiss_stations, start_date, end_date)
 weather_data.to_csv("complete_weather_data.csv")
+print("Weather data fetched successfully. Saving to MongoDB...")
 save_to_mongodb(weather_data)
