@@ -1,21 +1,38 @@
-from meteostat import Stations
+from meteostat import Stations, Hourly
 import pandas as pd
-from datetime import datetime
 
-# Aktuelles Jahr ermitteln
-current_year = datetime.now().year
+def fetch_stations_switzerland():
+    stations = Stations()
+    swiss_stations = stations.region('CH').fetch()
+    return swiss_stations
 
-# Alle Stationen in der Schweiz abrufen
-stations = Stations()
-swiss_stations = stations.region('CH').fetch()
+def fetch_weather_data(station_ids, start_date, end_date):
+    all_weather_data = pd.DataFrame()
+    for station_id in station_ids:
+        hourly = Hourly(station=station_id)
+        hourly = hourly.fetch(start=start_date, end=end_date)
+        if not hourly.empty:
+            hourly['station_id'] = station_id  # Füge die Stations-ID als eine Spalte hinzu
+            all_weather_data = all_weather_data.append(hourly, ignore_index=True)
+    return all_weather_data
 
-# Filtern nach Stationen, deren Datenaufzeichnungen bis zum aktuellen Jahr reichen
-active_stations = swiss_stations[swiss_stations['daily_end'].dt.year >= current_year]
+# Funktionen verwenden:
+swiss_stations = fetch_stations_switzerland()
 
-# Überprüfen, ob gefilterte Stationen vorhanden sind
-if not active_stations.empty:
-    # Exportieren der aktiven Stationen in eine CSV-Datei
-    active_stations.to_csv('active_swiss_stations.csv', index=False)
-    print(f"Aktive Stationen erfolgreich exportiert nach 'active_swiss_stations.csv'.")
+# Überprüfe die Spaltennamen und die ersten Zeilen des DataFrame
+print(swiss_stations.columns)
+print(swiss_stations.head())
+
+# Stelle sicher, dass die Spalte 'id' oder ein ähnlicher Spaltenname vorhanden ist
+if 'id' in swiss_stations.columns:
+    station_ids = swiss_stations['id'].tolist()  # Zugriff auf die Spalte 'id' für die Station-IDs
 else:
-    print(f"Keine aktuell aktiven Stationen in der Schweiz gefunden, die bis {current_year} Daten aufzeichnen.")
+    print("Die Spalte 'id' existiert nicht. Überprüfe die Spaltennamen.")
+    # Füge hier alternative Spaltennamen oder Handhabungen hinzu, falls nötig
+
+# Stelle sicher, dass station_ids definiert wurde, bevor du weitermachst
+if 'station_ids' in locals():
+    complete_weather_data = fetch_weather_data(station_ids, '2023-01-01', '2023-12-31')
+    complete_weather_data.to_csv('complete_weather_data.csv', index=False)
+else:
+    print("Station IDs wurden nicht korrekt definiert. Kann nicht fortfahren.")
