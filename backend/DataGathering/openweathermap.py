@@ -18,11 +18,11 @@ def get_weather(api_key, city_name):
         # Extrahieren der notwendigen Daten
         weather_details = {
             'Zeit': [datetime.now().strftime('%Y-%m-%d %H:%M:%S')],
-            'Stadt': [city_name],
+            'Ort': [city_name],
             'Temperatur': [weather_data['main']['temp']],
             'Luftdruck': [weather_data['main']['pressure']],
             'Luftfeuchtigkeit': [weather_data['main']['humidity']],
-            'Beschreibung': [weather_data['weather'][0]['description']],
+            'Wetterbedingung': [weather_data['weather'][0]['description']],
             'Windgeschwindigkeit': [weather_data['wind']['speed']],
             'Windrichtung': [f"{weather_data['wind']['deg']}° {get_wind_direction(weather_data['wind']['deg'])}"],
             'Wolkenbedeckung': [weather_data['clouds']['all']],
@@ -30,12 +30,13 @@ def get_weather(api_key, city_name):
             'Schneefallmenge (letzte Stunde)': [weather_data.get('snow', {}).get('1h', 'Keine Daten')],
             'Windböen': [weather_data.get('wind', {}).get('gust', 'Keine Daten')],
             'Sonnenaufgang': [datetime.fromtimestamp(weather_data['sys']['sunrise'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Sonnenuntergang': [datetime.fromtimestamp(weather_data['sys']['sunset'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')]
+            'Sonnenuntergang': [datetime.fromtimestamp(weather_data['sys']['sunset'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
         }
         
         # Konvertierung zu DataFrame
         df_weather = pd.DataFrame(weather_details)
-        
+        df_weather['Taupunkt'] = df_weather['Temperatur'] - ((100 - df_weather['Luftfeuchtigkeit']) / 5)
+
         db, collection = connect_mongodb()
         if db is not None and collection is not None:
             # Konvertierung des DataFrame zu Dictionary und Speicherung in MongoDB
