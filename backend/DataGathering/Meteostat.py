@@ -3,6 +3,7 @@ import pandas as pd
 from meteostat import Stations, Hourly
 from mongodb_connection import connect_mongodb
 
+
 def fetch_stations(region):
     """
     Fetches all stations for a specified region using the meteostat API.

@@ -45,6 +45,6 @@ def load_weather_conditions(path):
     df = pd.read_csv(path)
     return dict(zip(df['Code'], df['Wetterbedingung']))
 
-condition_dict = load_weather_conditions("backend\DataGathering\ConditionCodesMeteoStat.csv")
+condition_dict = load_weather_conditions(r"backend\DataGathering\Meteostat\ConditionCodesMeteoStat.csv")
 region_df['average_weather_condition'] = region_df['average_weather_condition'].map(condition_dict)
 print(region_df)

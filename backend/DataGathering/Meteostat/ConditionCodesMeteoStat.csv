@@ -1,0 +1,28 @@
+Code,Wetterbedingung
+1,Klar
+2,Heiter
+3,Bewölkt
+4,Bedeckt
+5,Nebel
+6,Gefrierender Nebel
+7,Leichter Regen
+8,Regen
+9,Starker Regen
+10,Gefrierender Regen
+11,Starker gefrierender Regen
+12,Schneeregen
+13,Starker Schneeregen
+14,Leichter Schneefall
+15,Schneefall
+16,Starker Schneefall
+17,Regenschauer
+18,Starker Regenschauer
+19,Graupelschauer
+20,Starker Graupelschauer
+21,Schneeschauer
+22,Starker Schneeschauer
+23,Blitz
+24,Hagel
+25,Gewitter
+26,Starker Gewitter
+27,Sturm
