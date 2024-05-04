@@ -4,3 +4,4 @@ __pycache__/
 backend/DataGathering/__pycache__
 backend/DataGathering/__pycache__/
 complete_weather_data.csv
+backend/DataGathering/*.csv

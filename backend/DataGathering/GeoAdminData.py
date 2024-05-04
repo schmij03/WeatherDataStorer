@@ -64,20 +64,23 @@ def main():
 
         wetter_df['Datum'] = wetter_df['Date'].apply(konvertiere_datum)
         regen_df['Datum'] = regen_df['Date'].apply(konvertiere_datum)
-        print(regen_df.head())
-        print(wetter_df.head())
+        wetter_df.drop(columns=['Date'], inplace=True)
+        regen_df.drop(columns=['Date'], inplace=True)
 
         regen_df.replace('-', np.nan, inplace=True)
         wetter_df.replace('-', np.nan, inplace=True)
 
         verbundene_df = pd.merge(wetter_df, regen_df, on=['Station/Location', 'Datum', 'Kanton', 'rre150z0', 'Stationstyp'], how='outer')
         verbundene_df.rename(columns={'Station/Location': 'Station'}, inplace=True)
+
         print(verbundene_df.head())
         print("Verfügbare meteorologische Parameter und deren Beschreibung:")
         print(parameter_df.head())
 
         aktuelle_zeit = datetime.now()
         formatierte_zeit = aktuelle_zeit.strftime("%H:%M:%S")
+        wetter_df.to_csv(f"backend/DataGathering/GeoAdminData_{3}.csv", index=False)
+        print(verbundene_df.head())
         print("Aktuelle Zeit:", formatierte_zeit)
 
 while True:
