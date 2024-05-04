@@ -113,6 +113,10 @@ def main():
         
         # Daten zusammenführen
         merged_df = pd.merge(weather_df, rainfall_df, on=['Kürzel', 'Datum', 'Kanton', 'Niederschlag; Zehnminutensumme', 'Stationstyp', 'Ort'], how='outer')
+        
+        # Ausgabe der ersten Datensätze und Informationen
+        print(merged_df.head())
+        print("Available meteorological parameters and their descriptions:")
 
         # Aktuelle Zeit anzeigen
         current_time = datetime.now().strftime("%H:%M:%S")
@@ -122,6 +126,7 @@ def main():
         rainfall_df.to_csv(f"backend/DataGathering/GeoAdminData_{12}.csv", index=False)
         
         # Zusätzliche Ausgaben
+        print(merged_df.head())
         print("Current Time:", current_time)
 
 # Endlosschleife für regelmäßige Datenaktualisierung
