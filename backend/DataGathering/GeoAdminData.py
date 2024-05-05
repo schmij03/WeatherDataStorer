@@ -56,6 +56,9 @@ def load_parameter_descriptions(filepath):
         print(f"Error loading parameter descriptions: {e}")
         return pd.DataFrame()
 
+
+
+
 # Hauptfunktion, die den gesamten Ablauf steuert
 def main():
     # URLs und Dateipfade zu den Daten
@@ -91,6 +94,7 @@ def main():
         weather_df['Stationstyp'] = weather_df['Stationstyp'].apply(lambda x: 'W' if x == 'Wetterstation' else 'N')
         rainfall_df['Stationstyp'] = rainfall_df['Stationstyp'].apply(lambda x: 'W' if x == 'Wetterstation' else 'N')
         
+        weather_df.to_csv(f"backend/DataGathering/GeoAdminData_{1}.csv", index=False)
         # Datumskonvertierung und Spaltenbereinigung
         weather_df['Datum'] = weather_df['Date'].apply(convert_date)
         rainfall_df['Datum'] = rainfall_df['Date'].apply(convert_date)
@@ -120,11 +124,6 @@ def main():
         # Daten in CSV-Dateien speichern
         weather_df.to_csv(f"backend/DataGathering/GeoAdminData_{11}.csv", index=False)
         rainfall_df.to_csv(f"backend/DataGathering/GeoAdminData_{12}.csv", index=False)
-        
-        # Zusätzliche Ausgaben
-        print("Current Time:", current_time)
 
-# Endlosschleife für regelmäßige Datenaktualisierung
-while True:
-    main()  # Hauptfunktion aufrufen
-    time.sleep(1800)  # 30 Minuten warten, bevor der nächste Durchlauf erfolgt
+        weather_date = weather_df.iloc[0]['Datum']
+        return weather_date, weather_df,rainfall_df,merged_df

@@ -61,3 +61,12 @@ def save_to_mongodb(data):
     if db is not None and collection is not None:
         collection.insert_many(data.to_dict('records'))
         print("All weather data successfully stored in MongoDB.")
+
+swiss_stations = fetch_stations("CH")
+
+start_date = datetime(2024, 1, 1)
+end_date = datetime(2024, 5, 3, 23, 00, 00)
+weather_data = fetch_weather_data(swiss_stations, start_date, end_date)
+weather_data.to_csv("complete_weather_data.csv")
+print("Weather data fetched successfully. Saving to MongoDB...")
+#save_to_mongodb(weather_data)

@@ -6,6 +6,8 @@ import time
 import numpy as np
 from mongodb_connection import connect_mongodb  # Überprüfe, ob dies korrekt eingebunden ist
 
+weather_df_date = None  # Initialisiere die Variable außerhalb der main-Funktion
+
 # Funktion zum Laden von CSV-Daten aus einer Datei
 def load_csv_data(filepath):
     try:
@@ -58,6 +60,7 @@ def load_parameter_descriptions(filepath):
 
 # Hauptfunktion, die den gesamten Ablauf steuert
 def main():
+    global weather_df_date  # Zugriff auf die globale Variable
     # URLs und Dateipfade zu den Daten
     weather_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-aktuell/VQHA80.csv'
     rainfall_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-aktuell/VQHA98.csv'
@@ -91,6 +94,7 @@ def main():
         weather_df['Stationstyp'] = weather_df['Stationstyp'].apply(lambda x: 'W' if x == 'Wetterstation' else 'N')
         rainfall_df['Stationstyp'] = rainfall_df['Stationstyp'].apply(lambda x: 'W' if x == 'Wetterstation' else 'N')
         
+        weather_df.to_csv(f"backend/DataGathering/GeoAdminData_{1}.csv", index=False)
         # Datumskonvertierung und Spaltenbereinigung
         weather_df['Datum'] = weather_df['Date'].apply(convert_date)
         rainfall_df['Datum'] = rainfall_df['Date'].apply(convert_date)
@@ -113,10 +117,6 @@ def main():
         
         # Daten zusammenführen
         merged_df = pd.merge(weather_df, rainfall_df, on=['Kürzel', 'Datum', 'Kanton', 'Niederschlag; Zehnminutensumme', 'Stationstyp', 'Ort'], how='outer')
-        
-        # Ausgabe der ersten Datensätze und Informationen
-        print(merged_df.head())
-        print("Available meteorological parameters and their descriptions:")
 
         # Aktuelle Zeit anzeigen
         current_time = datetime.now().strftime("%H:%M:%S")
@@ -126,10 +126,13 @@ def main():
         rainfall_df.to_csv(f"backend/DataGathering/GeoAdminData_{12}.csv", index=False)
         
         # Zusätzliche Ausgaben
-        print(merged_df.head())
         print("Current Time:", current_time)
-
-# Endlosschleife für regelmäßige Datenaktualisierung
-while True:
-    main()  # Hauptfunktion aufrufen
-    time.sleep(1800)  # 30 Minuten warten, bevor der nächste Durchlauf erfolgt
+        
+        # Setze weather_df_date auf das Datum aus weather_df
+        weather_df_date = weather_df.iloc[0]['Datum']
+        print(weather_df_date)
+        return weather_df_date
+# # Endlosschleife für regelmäßige Datenaktualisierung
+# while True:
+#     main()  # Hauptfunktion aufrufen
+#     time.sleep(1800)  # 30 Minuten warten, bevor der nächste Durchlauf erfolgt
