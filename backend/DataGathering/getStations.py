@@ -43,4 +43,4 @@ final_df = pd.concat([weather_geoadmin_df, new_df], ignore_index=True)
 final_df['country']='CH'
 final_df=final_df.sort_values(by='Kanton')
 final_df=final_df.reset_index(drop=True)
-final_df.to_csv(f"Stations.csv", index=False)
+final_df.to_csv(f"backend/DataGathering/Stations.csv", index=False)

@@ -65,8 +65,8 @@ def save_to_mongodb(data):
 swiss_stations = fetch_stations("CH")
 
 start_date = datetime(2024, 1, 1)
-end_date = datetime(2024, 5, 3, 23, 00, 00)
+end_date = datetime(2024, 5, 6, 19, 00, 00)
 weather_data = fetch_weather_data(swiss_stations, start_date, end_date)
 weather_data.to_csv("complete_weather_data.csv")
 print("Weather data fetched successfully. Saving to MongoDB...")
-#save_to_mongodb(weather_data)
+save_to_mongodb(weather_data)
