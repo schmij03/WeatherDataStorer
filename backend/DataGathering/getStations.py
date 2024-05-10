@@ -8,7 +8,7 @@ stations = fetch_stations('CH')
 stations=stations.reset_index()
 
 combined=stations
-combined=combined.drop(columns=["wmo","icao","latitude","longitude","elevation","timezone","hourly_start","hourly_end","daily_start","daily_end","monthly_start","monthly_end"])
+combined=combined.drop(columns=["wmo","icao","elevation","timezone","hourly_start","hourly_end","daily_start","daily_end","monthly_start","monthly_end"])
 weather_geoadmin_df=weather_geoadmin_df.drop(columns=["Lufttemperatur 2 m über Boden; Momentanwert","Niederschlag; Zehnminutensumme","Sonnenscheindauer; Zehnminutensumme","Globalstrahlung; Zehnminutenmittel","Relative Luftfeuchtigkeit 2 m über Boden; Momentanwert","Taupunkt 2 m über Boden; Momentanwert","Windrichtung; Zehnminutenmittel","Windgeschwindigkeit; Zehnminutenmittel","Böenspitze (Sekundenböe); Maximum","Luftdruck auf Stationshöhe (QFE); Momentanwert","Luftdruck reduziert auf Meeresniveau (QFF); Momentanwert","Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre (QNH); Momentanwert","Geopotentielle Höhe der 850 hPa-Fläche; Momentanwert","Geopotentielle Höhe der 700 hPa-Fläche; Momentanwert","Windrichtung vektoriell; Zehnminutenmittel; Instrument 1","Windgeschwindigkeit Turm; Zehnminutenmittel","Böenspitze (Sekundenböe) Turm; Maximum","Lufttemperatur Instrument 1","Relative Luftfeuchtigkeit Turm; Momentanwert","Taupunkt Turm","Stationstyp","Datum","Föhnindex"])
 
 #combined=combined.merge(weather_geoadmin_df[['Kürzel']], left_on='name', right_on='Ort', how='left')
@@ -18,6 +18,12 @@ print(combined)
 # Initialize a list to collect new rows
 weather_geoadmin_df['id'] = [None] * len(weather_geoadmin_df)
 new_rows = []
+
+def combine_latitude_longitude(row):
+        return f"{row['latitude']},{row['longitude']}"
+
+combined['Location Lat,Lon'] = combined.apply(combine_latitude_longitude, axis=1)
+combined=combined.drop(columns=['latitude','longitude'])
 
 # Iterate through combined and match `name` with `Ort` in weather_geoadmin_df
 for index, row in combined.iterrows():
@@ -31,6 +37,7 @@ for index, row in combined.iterrows():
             'Kürzel': '',  # Leave this empty, as it's not available in combined
             'Kanton': row['region'],  # Use the `region` field from combined
             'Ort': row['name'],
+            'Location Lat,Lon': row['Location Lat,Lon'],
             'id': row['id']  # Add the `id` field from combined
         }
         new_rows.append(new_row)

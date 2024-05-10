@@ -2,9 +2,7 @@ import pandas as pd
 import requests
 from datetime import datetime
 from io import StringIO
-import time
 import numpy as np
-from mongodb_connection import connect_mongodb  # Überprüfe, ob dies korrekt eingebunden ist
 
 # Funktion zum Laden von CSV-Daten aus einer Datei
 def load_csv_data(filepath):
@@ -56,9 +54,6 @@ def load_parameter_descriptions(filepath):
         print(f"Error loading parameter descriptions: {e}")
         return pd.DataFrame()
 
-
-
-
 # Hauptfunktion, die den gesamten Ablauf steuert
 def main():
     # URLs und Dateipfade zu den Daten
@@ -80,6 +75,9 @@ def main():
     # Stationsdaten laden
     stations_df = load_csv_data(stations_description)
 
+    def combine_latitude_longitude(row):
+        return f"{row['Breitengrad']},{row['Längengrad']}"
+
     # Wenn die Daten erfolgreich geladen wurden, führe weitere Schritte aus
     if weather_df is not None and stations_df is not None:
         # Indizes für effiziente Datenmanipulation festlegen
@@ -87,9 +85,13 @@ def main():
         stations_df.set_index('Abk.', inplace=True)
         
         # Kantonsinformationen zu Wetter- und Regendaten hinzufügen
-        weather_df = weather_df.merge(stations_df[['Kanton', 'Stationstyp', 'Station']], left_on='Station/Location', right_index=True, how='left')
-        rainfall_df = rainfall_df.merge(stations_df[['Kanton', 'Stationstyp', 'Station']], left_on='Station/Location', right_index=True, how='left')
-        
+        weather_df = weather_df.merge(stations_df[['Kanton', 'Stationstyp', 'Station','Breitengrad','Längengrad']], left_on='Station/Location', right_index=True, how='left')
+        rainfall_df = rainfall_df.merge(stations_df[['Kanton', 'Stationstyp', 'Station','Breitengrad','Längengrad']], left_on='Station/Location', right_index=True, how='left')
+        weather_df['Location Lat,Lon'] = weather_df.apply(combine_latitude_longitude, axis=1)
+        rainfall_df['Location Lat,Lon'] = rainfall_df.apply(combine_latitude_longitude, axis=1)
+        weather_df=weather_df.drop(columns=['Breitengrad','Längengrad'])
+        rainfall_df=rainfall_df.drop(columns=['Breitengrad','Längengrad'])        
+
         # Stationstypen vereinheitlichen
         weather_df['Stationstyp'] = weather_df['Stationstyp'].apply(lambda x: 'W' if x == 'Wetterstation' else 'N')
         rainfall_df['Stationstyp'] = rainfall_df['Stationstyp'].apply(lambda x: 'W' if x == 'Wetterstation' else 'N')
@@ -120,10 +122,28 @@ def main():
 
         # Aktuelle Zeit anzeigen
         current_time = datetime.now().strftime("%H:%M:%S")
-        
-        # Daten in CSV-Dateien speichern
-        weather_df.to_csv(f"backend/DataGathering/GeoAdminData_{11}.csv", index=False)
-        rainfall_df.to_csv(f"backend/DataGathering/GeoAdminData_{12}.csv", index=False)
+        mapping = {
+            "Lufttemperatur 2 m über Boden; Momentanwert": "Temperatur",
+            "Taupunkt 2 m über Boden; Momentanwert": "Taupunkt",
+            "Relative Luftfeuchtigkeit 2 m über Boden; Momentanwert": "Luftfeuchtigkeit",
+            "Niederschlag; Zehnminutensumme": "Niederschlagsmenge (letzte Stunde)",
+            "Windrichtung; Zehnminutenmittel": "Windrichtung",
+            "Windgeschwindigkeit; Zehnminutenmittel": "Windgeschwindigkeit",
+            "Böenspitze (Sekundenböe); Maximum": "Windböen",
+            "Luftdruck auf Stationshöhe (QFE); Momentanwert": "Luftdruck",
+            "Sonnenscheindauer; Zehnminutensumme": "Sonneneinstrahlungsdauer",
+            "Globalstrahlung; Zehnminutenmittel": "Globalstrahlung",
+            "Luftdruck reduziert auf Meeresniveau (QFF); Momentanwert": "Luftdruck reduziert auf Meeresniveau",
+            "Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre (QNH); Momentanwert": "Luftdruck reduziert auf Meeresniveau mit Standardatmosphäre",
+            "Geopotentielle Höhe der 850 hPa-Fläche; Momentanwert": "Geopotentielle Höhe der 850 hPa-Fläche",
+            "Geopotentielle Höhe der 700 hPa-Fläche; Momentanwert": "Geopotentielle Höhe der 700 hPa-Fläche",
+            "Windrichtung vektoriell; Zehnminutenmittel; Instrument 1": "Windrichtung vektoriell",
+            "Windgeschwindigkeit Turm; Zehnminutenmittel": "Windgeschwindigkeit Turm",
+            "Böenspitze (Sekundenböe) Turm; Maximum": "Böenspitze Turm",
+            "Relative Luftfeuchtigkeit Turm; Momentanwert": "Relative Luftfeuchtigkeit Turm",
+            "Ort": "Ort"
+        }
+        weather_df=weather_df.rename(columns=mapping)
 
         weather_date = weather_df.iloc[0]['Datum']
-        return weather_date, weather_df,rainfall_df,merged_df
+        return weather_date, weather_df, rainfall_df, merged_df
