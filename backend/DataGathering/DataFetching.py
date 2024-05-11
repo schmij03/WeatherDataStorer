@@ -3,7 +3,7 @@ from Meteostat import fetch_stations, fetch_weather_data
 from datetime import datetime, timedelta
 
 # Call the main function to obtain a time value
-time_str, weather_geoadmin_df, rainfall_geoadmin_df,merged_geoadmin_df = main()  # This should return a string representing a timestamp
+time_str, weather_geoadmin_df, rainfall_geoadmin_df,merged_geoadmin_df, geoadmin_stations = main()  # This should return a string representing a timestamp
 print(f"Original time (string): {time_str}")
 
 # Convert the string into a datetime object using `datetime.strptime`

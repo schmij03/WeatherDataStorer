@@ -144,6 +144,6 @@ def main():
             "Ort": "Ort"
         }
         weather_df=weather_df.rename(columns=mapping)
-
+        geoadmin_stations=weather_df[['Kürzel','Ort','Kanton','Location Lat,Lon']].drop_duplicates()
         weather_date = weather_df.iloc[0]['Datum']
-        return weather_date, weather_df, rainfall_df, merged_df
+        return weather_date, weather_df, rainfall_df, merged_df, geoadmin_stations
