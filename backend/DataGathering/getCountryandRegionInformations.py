@@ -3,16 +3,16 @@ import googlemaps
 from getStationInformations import meteostat_filtered, meteomatics_filtered, openweathermap_filtered
 from GeoAdminData import main
 # Load the data
-data = meteomatics_filtered
-data2 = meteostat_filtered
-data3 = openweathermap_filtered
-time_str, weather_geoadmin_df, rainfall_geoadmin_df,merged_geoadmin_df, geoadmin_stations = main()
-data4 = geoadmin_stations
+data2 = meteomatics_filtered
+data3 = meteostat_filtered
+data4 = openweathermap_filtered
+time_str, weather_geoadmin_df, geoadmin_stations = main()
+data = geoadmin_stations
 
 # DataFrames zusammenführen
-df_combined_filtered = pd.merge(data, data2, on='Location Lat,Lon', how='outer', suffixes=('_meteom', '_meteos'))
-df_combined_filtered = pd.merge(df_combined_filtered, data3, on='Location Lat,Lon', how='outer', suffixes=('', '_openweather'))
-df_combined_filtered = pd.merge(df_combined_filtered, data4, on='Location Lat,Lon', how='outer', suffixes=('', '_geoadmin'))
+df_combined_filtered = pd.merge(data, data2, on='Location Lat,Lon', how='outer', suffixes=('_geoadmin', '_meteom'))
+df_combined_filtered = pd.merge(df_combined_filtered, data3, on='Location Lat,Lon', how='outer', suffixes=('', '_meteos'))
+df_combined_filtered = pd.merge(df_combined_filtered, data4, on='Location Lat,Lon', how='outer', suffixes=('', '_openweather'))
 
 # Konsolidieren doppelter Spalten (z.B. 'elevation_x' und 'elevation_y')
 # Generieren einer Liste der Spalten, die mit '_meteomatics', '_meteostat' und '_openweathermap' enden
@@ -42,10 +42,18 @@ google_maps_key = 'AIzaSyBPPQk2MCl9gqa18jjUtg-1fj5pmb2ABhc'
 gmaps = googlemaps.Client(key=google_maps_key)
 
 
-# Funktion zur Extraktion der Standortinformationen
 def get_location_info(latlon):
+    # Überprüfen, ob latlon überhaupt einen sinnvollen Wert enthält
     try:
         lat, lon = map(float, latlon.split(','))
+        # Prüfen, ob lat und lon gültige Koordinaten sind
+        if pd.isna(lat) or pd.isna(lon) or not (-90 <= lat <= 90 and -180 <= lon <= 180):
+            raise ValueError("Ungültige Koordinaten")
+    except (ValueError, TypeError):
+        print(f"Fehler: Ungültige Koordinaten {latlon}")
+        return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
+
+    try:
         # Verwendung der Google Maps API
         result = gmaps.reverse_geocode((lat, lon))
         if result:
@@ -58,10 +66,12 @@ def get_location_info(latlon):
                 if 'locality' in component['types']:
                     city = component['long_name']
             return {"country": country, "region": region, "city": city}
-        return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
     except Exception as e:
-        print(f"Fehler: {e} - mit Koordinaten {latlon}")
+        print(f"Fehler bei der API-Anfrage: {e} - mit Koordinaten {latlon}")
         return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
+
+    return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
+
 
 def update_location_info(row):
     # Stelle sicher, dass alle notwendigen Spalten vorhanden sind
