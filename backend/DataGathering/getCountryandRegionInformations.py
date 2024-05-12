@@ -37,6 +37,7 @@ for col in to_consolidate:
     # Entfernen der alten Spalten mit Suffixen
     df_combined_filtered.drop([col + suffix for suffix in suffixes if (col + suffix) in df_combined_filtered.columns], axis=1, inplace=True)
 
+df_combined_filtered.to_csv('backend/DataGathering/AllStationswithNaN.csv', index=False)
 # Initialize the Google Maps Client
 google_maps_key = 'AIzaSyBPPQk2MCl9gqa18jjUtg-1fj5pmb2ABhc'
 gmaps = googlemaps.Client(key=google_maps_key)

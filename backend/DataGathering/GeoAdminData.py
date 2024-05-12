@@ -145,5 +145,9 @@ def main():
         }
         weather_df=weather_df.rename(columns=mapping)
         geoadmin_stations=weather_df[['Kürzel','Ort','Kanton','Location Lat,Lon']].drop_duplicates()
+
+        #Wenn Location Lat,Lon "nan,nan" ist, dann wird die Zeile gelöscht
+        geoadmin_stations=geoadmin_stations.dropna(subset=['Location Lat,Lon'])
+        geoadmin_stations.to_csv(f"backend/DataGathering/GeoAdminStations_without_nan.csv", index=False)
         weather_date = weather_df.iloc[0]['Datum']
         return weather_date, weather_df, geoadmin_stations
