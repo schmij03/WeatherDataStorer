@@ -1,17 +1,6 @@
 from datetime import datetime
 import pandas as pd
-from meteostat import Stations, Hourly
-from mongodb_connection import connect_mongodb
-
-
-def fetch_stations(region):
-    """
-    Fetches all stations for a specified region using the meteostat API.
-    """
-    stations = Stations()
-    return stations.region(region).fetch()
-
-
+from meteostat import Hourly
 
 def fetch_weather_data(stations, start_date, end_date):
     """
@@ -19,15 +8,16 @@ def fetch_weather_data(stations, start_date, end_date):
     """
     all_weather_data = pd.DataFrame()
     stations = stations.reset_index()
-    
+
     for index, station in stations.iterrows():
-        hourly_data = Hourly(station['id'], start_date, end_date).fetch()
+        hourly_data = Hourly(station['id_meteostat'], start_date, end_date).fetch()
         if not hourly_data.empty:
             process_station_data(hourly_data, station)
             all_weather_data = pd.concat([all_weather_data, hourly_data])
         else:
-            print(f"No data available for station {station['id']}")
+            print(f"No data available for station {station['id_meteostat']}")
     return all_weather_data
+
 
 def process_station_data(data, station):
     """
@@ -49,15 +39,6 @@ def process_station_data(data, station):
         'pres': 'Luftdruck',
         'tsun': 'Sonneneinstrahlungsdauer'
     }, inplace=True)
-    data['station_id'] = station['id']
+    data['station_id'] = station['id_meteostat']
     data['Ort'] = station['name']
     data['Region'] = station['region']
-
-def save_to_mongodb(data):
-    """
-    Saves processed weather data to MongoDB.
-    """
-    db, collection = connect_mongodb()
-    if db is not None and collection is not None:
-        collection.insert_many(data.to_dict('records'))
-        print("All weather data successfully stored in MongoDB.")

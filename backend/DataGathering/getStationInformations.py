@@ -110,6 +110,7 @@ if 'combined_df' in locals():
     filtered_df = combined_df[combined_df['in_polygon']].copy()
     filtered_df['elevation'] = filtered_df['Elevation'].str.replace('m', '').astype(float)
     meteomatics_filtered=filtered_df.drop(columns={'in_polygon', 'Start Date', 'End Date','Elevation'}).rename(columns={'Name': 'Ort'})
+    meteomatics_filtered['id_meteomatics']=meteomatics_filtered['Location Lat,Lon']
     # Save the filtered DataFrame to CSV
     meteomatics_filtered.to_csv('backend/DataGathering/meteomatics_stations_filtered.csv', index=False)
 

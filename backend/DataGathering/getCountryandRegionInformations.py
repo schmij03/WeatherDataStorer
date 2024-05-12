@@ -8,7 +8,8 @@ data3 = meteostat_filtered
 data4 = openweathermap_filtered
 time_str, weather_geoadmin_df, geoadmin_stations = main()
 data = geoadmin_stations
-
+data = data.dropna(subset=['Location Lat,Lon'])
+data.to_csv('backend/DataGathering/GeoAdminStationsTEST.csv', index=False)
 # DataFrames zusammenführen
 df_combined_filtered = pd.merge(data, data2, on='Location Lat,Lon', how='outer', suffixes=('_geoadmin', '_meteom'))
 df_combined_filtered = pd.merge(df_combined_filtered, data3, on='Location Lat,Lon', how='outer', suffixes=('', '_meteos'))
