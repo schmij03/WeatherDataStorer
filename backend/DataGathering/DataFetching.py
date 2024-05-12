@@ -2,10 +2,10 @@ import pandas as pd
 from GeoAdminData import main
 from Meteostat import fetch_weather_data
 from datetime import datetime, timedelta
-from openweathermap import get_weather
+from openweathermap import fetch_weatherdata
 
 # Call the main function to obtain a time value
-time_str, weather_geoadmin_df, geoadmin_stations = main()  # This should return a string representing a timestamp
+time_str, weather_geoadmin_df, geoadmin_stations = main()
 print(f"Original time (string): {time_str}")
 
 # Convert the string into a datetime object using `datetime.strptime`
@@ -16,26 +16,19 @@ print(f"Converted time (datetime): {time_obj}")
 rounded_hour = time_obj.replace(minute=0, second=0, microsecond=0)
 print(f"Rounded to the nearest whole hour: {rounded_hour}")
 
+weather_geoadmin_df.to_csv(f'backend/DataGathering/Files/GeoAdminData{rounded_hour}.csv', index=False)
+print('GeoAdmin data saved successfully.')
+
 # Read Stations from csv file
-allstations=pd.read_csv('backend/DataGathering/AllStations_with_location_info.csv')
-
-stations_meteostat = allstations[allstations['id_meteostat'] != ""]
-for index, stationmeteostat in stations_meteostat.iterrows():
-    # Prüfen, ob das 'id_meteostat' Feld leer ist
-    weather_meteostat_df = fetch_weather_data(stationmeteostat, rounded_hour, rounded_hour)
-        # Füge das Ergebnis zum resultierenden DataFrame hinzu
-    meteostat_final = pd.concat([meteostat_final, weather_meteostat_df], ignore_index=True)
-
-meteostat_final.to_csv('backend/DataGathering/Meteostat{rounded_hour}.csv', index=False)
+allstations=pd.read_csv('backend/DataGathering/Files/AllStations_with_location_info.csv')
 
 
-for index, stationopenweather in allstations.iterrows():
-    # Prüfen, ob das 'id_openweather' Feld leer ist
-    if stationopenweather['id_openweather'] != "":
-        # Wenn nicht leer, Funktion aufrufen um Wetterdaten für die gesamte Station zu holen
-        weather_openweather_df = get_weather(stationopenweather, rounded_hour, rounded_hour)
-        
-        # Füge das Ergebnis zum resultierenden DataFrame hinzu
-        openweather_final = pd.concat([openweather_final, weather_openweather_df])
+stations_meteostat = allstations[allstations['id_meteostat'].notna()]
+meteostat_final = fetch_weather_data(stations_meteostat, rounded_hour, rounded_hour)
+meteostat_final.to_csv(f'backend/DataGathering/Meteostat{rounded_hour}.csv', index=False)
+print("Meteostat data saved successfully")
 
-openweather_final.to_csv('backend/DataGathering/OpenWeather{rounded_hour}.csv', index=False)
+stations_openweather = allstations[allstations['id_openweathermap'].notna()]
+openweather_final = fetch_weatherdata(stations_openweather, rounded_hour)
+openweather_final.to_csv(f'backend/DataGathering/Files/OpenWeather{rounded_hour}.csv', index=False)
+print("OpenWeather data saved successfully")

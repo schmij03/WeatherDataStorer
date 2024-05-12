@@ -3,16 +3,26 @@ import pandas as pd
 from datetime import datetime, timezone
 api_key = '06f4684f04692eef55eaca387497e196'
 
+def fetch_weatherdata(stations, start_end_openweather):
+    start_datetime = datetime.strptime(str(start_end_openweather), "%Y-%m-%d %H:%M:%S")
+    hour = int(start_datetime.timestamp())
+    for index, stationopenweather in stations.iterrows():
+        # Prüfen, ob das 'id_openweather' Feld leer ist
+        weather_openweather_df = get_weather(int(stationopenweather['id_openweathermap']), hour)
+
+        # Füge das Ergebnis zum resultierenden DataFrame hinzu
+        openweather_final = pd.DataFrame()
+        openweather_final = pd.concat([openweather_final, weather_openweather_df])
+    return openweather_final
+
 def get_wind_direction(degrees):
     directions = ["N", "NNO", "NO", "ONO", "O", "OSO", "SO", "SSO", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
     index = round(degrees / 22.5) % 16
     return directions[index]
 
-def get_weather(start,end,city_id):
-    start = int(start.timestamp())
-    end = int(end.timestamp())
+def get_weather(city_id,hour):
     base_url = "https://api.openweathermap.org/data/2.5/weather?"
-    complete_url = f"{base_url}id={city_id}&start={start}&end={end}&appid={api_key}&units=metric&lang=de"
+    complete_url = f"{base_url}id={city_id}&start={hour}&end={hour}&appid={api_key}&units=metric&lang=de"
     response = requests.get(complete_url)
     weather_data = response.json()
     
@@ -45,4 +55,4 @@ def get_weather(start,end,city_id):
         df_weather['Taupunkt'] = df_weather['Temperatur'] - ((100 - df_weather['Luftfeuchtigkeit']) / 5)
         return df_weather
     else:
-        print("Stadt nicht gefunden oder API-Schlüssel ist ungültig.")
+        print(f"Ortschaft mit ID {city_id} nicht gefunden oder API-Schlüssel ist ungültig.")
