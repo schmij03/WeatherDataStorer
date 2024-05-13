@@ -61,3 +61,5 @@ def process_station_data(data, station):
     data['station_id'] = station['id_meteostat']
     data['Ort'] = station['Ort']
     data['Region'] = station['region']
+    data['Koordinaten'] = station['Location Lat,Lon']
+    data['Land'] = station['country']

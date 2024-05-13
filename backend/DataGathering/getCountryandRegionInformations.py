@@ -3,7 +3,7 @@ import googlemaps
 import json
 from getStationInformations import meteostat_filtered, meteomatics_filtered, openweathermap_filtered
 from GeoAdminData import main
-
+from mongodb_connection import save_to_mongodb
 # Load the data
 data2 = meteomatics_filtered
 data3 = meteostat_filtered
@@ -40,11 +40,12 @@ for col in to_consolidate:
     # Entfernen der alten Spalten mit Suffixen
     df_combined_filtered.drop([col + suffix for suffix in suffixes if (col + suffix) in df_combined_filtered.columns], axis=1, inplace=True)
 
+df_combined_filtered = df_combined_filtered.drop_duplicates(subset=['Location Lat,Lon'])
 df_combined_filtered.to_csv('backend/DataGathering/AllStationswithNaN.csv', index=False)
 # Initialize the Google Maps Client
 with open('backend/DataGathering/pwd.json') as f:
     credentials = json.load(f)
-    google_maps_key = credentials['google_maps_key']
+    google_maps_key = credentials['google_api_key']
 
 gmaps = googlemaps.Client(key=google_maps_key)
 

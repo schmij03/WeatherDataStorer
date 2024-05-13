@@ -140,12 +140,13 @@ def main():
             "Windgeschwindigkeit Turm; Zehnminutenmittel": "Windgeschwindigkeit Turm",
             "Böenspitze (Sekundenböe) Turm; Maximum": "Böenspitze Turm",
             "Relative Luftfeuchtigkeit Turm; Momentanwert": "Relative Luftfeuchtigkeit Turm",
-            "Ort": "Ort"
+            "Ort": "Ort",
+            "Location Lat,Lon": "Koordinaten"
         }
-        weather_df=weather_df.rename(columns=mapping)
-        geoadmin_stations=weather_df[['Kürzel','Ort','Kanton','Location Lat,Lon']].drop_duplicates()
-
+        weather_df = weather_df.rename(columns=mapping)
+        weather_df = weather_df[weather_df['Koordinaten'] != 'nan,nan']
+        weather_df = weather_df.drop(columns=['Kürzel', 'Stationstyp'])
+        geoadmin_stations = weather_df[['Ort', 'Kanton', 'Koordinaten']].drop_duplicates()
         # Drop rows where Location Lat,Lon is "nan,nan"
-        geoadmin_stations=geoadmin_stations.dropna(subset=['Location Lat,Lon'])
         weather_date = weather_df.iloc[0]['Datum']
         return weather_date, weather_df, geoadmin_stations
