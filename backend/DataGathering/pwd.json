@@ -1,0 +1,14 @@
+{
+    "openweathermap_api_key": "YOUR_OPENWEATHERMAP_API_KEY",
+    "google_api_key": "YOUR_GOOGLE_API_KEY",
+    "meteomatics_credentials": {
+      "username": "YOUR_METEOMATIC_USERNAME",
+      "password": "YOUR_METEOMATIC_PASSWORD"
+    },
+    "mongodb_credentials": {
+      "username": "YOUR_MONGODB_USERNAME",
+      "password": "YOUR_MONGODB_PASSWORD",
+      "database": "YOUR_MONGODB_DATABASE"
+    }
+  }
+  

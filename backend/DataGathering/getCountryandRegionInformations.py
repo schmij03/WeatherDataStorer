@@ -1,7 +1,9 @@
 import pandas as pd
 import googlemaps
+import json
 from getStationInformations import meteostat_filtered, meteomatics_filtered, openweathermap_filtered
 from GeoAdminData import main
+
 # Load the data
 data2 = meteomatics_filtered
 data3 = meteostat_filtered
@@ -40,7 +42,10 @@ for col in to_consolidate:
 
 df_combined_filtered.to_csv('backend/DataGathering/AllStationswithNaN.csv', index=False)
 # Initialize the Google Maps Client
-google_maps_key = 'AIzaSyBPPQk2MCl9gqa18jjUtg-1fj5pmb2ABhc'
+with open('backend/DataGathering/pwd.json') as f:
+    credentials = json.load(f)
+    google_maps_key = credentials['google_maps_key']
+
 gmaps = googlemaps.Client(key=google_maps_key)
 
 

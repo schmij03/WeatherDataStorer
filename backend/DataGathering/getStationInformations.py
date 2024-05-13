@@ -7,9 +7,10 @@ import requests
 from io import StringIO
 import gzip
 
-# Authentication details should be securely managed, not hardcoded
-username = 'zhaw_schmid_jan'
-password = 'T36iwL9Sik'
+with open('backend/DataGathering/pwd.json') as f:
+    credentials = json.load(f)
+    username = credentials['meteomatics_credentials']['username']
+    password = credentials['meteomatics_credentials']['password']
 
 # Encode credentials to Base64 and set up the authorization header
 credentials = base64.b64encode(f"{username}:{password}".encode()).decode('utf-8')

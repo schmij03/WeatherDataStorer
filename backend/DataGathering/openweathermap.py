@@ -1,7 +1,14 @@
 import requests
 import pandas as pd
 from datetime import datetime, timezone
-api_key = '06f4684f04692eef55eaca387497e196'
+import json
+
+def get_api_key():
+    with open('backend/DataGathering/pwd.json') as f:
+        credentials = json.load(f)
+        api_key = credentials['openweathermap_credentials']['api_key']
+    return api_key
+
 
 def fetch_weatherdata(stations, start_end_openweather):
     start_datetime = datetime.strptime(str(start_end_openweather), "%Y-%m-%d %H:%M:%S")
@@ -21,6 +28,7 @@ def get_wind_direction(degrees):
     return directions[index]
 
 def get_weather(city_id,hour):
+    api_key=get_api_key()
     base_url = "https://api.openweathermap.org/data/2.5/weather?"
     complete_url = f"{base_url}id={city_id}&start={hour}&end={hour}&appid={api_key}&units=metric&lang=de"
     response = requests.get(complete_url)

@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
 from datetime import datetime
+import json
 
 def fetch_weather(api_username, api_password, latitude, longitude):
     # Datum und Zeit für die Abfrage aufbereiten
@@ -30,16 +31,21 @@ stations_df[['latitude', 'longitude']] = stations_df['Location Lat,Lon'].str.spl
 stations_df['latitude'] = pd.to_numeric(stations_df['latitude'])
 stations_df['longitude'] = pd.to_numeric(stations_df['longitude'])
 
-# API-Zugangsdaten
-api_username = 'zhaw_schmid_jan'
-api_password = 'T36iwL9Sik'
+def get_credentials():
+    # Laden der API-Zugangsdaten aus einer JSON-Datei
+    with open('backend\DataGathering\pwd.json') as f:
+        credentials = json.load(f)
+        api_username = credentials['meteomatics_credentials']['username']
+        api_password = credentials['meteomatics_credentials']['password']
+    return api_username, api_password
 
 # Neues DataFrame zur Speicherung der Ergebnisse
 results_df = pd.DataFrame(columns=['Ort', 'latitude', 'longitude', 'temperature', 'elevation'])
 
 # Durchlaufen des DataFrames und Abfrage der Wetterdaten für jede Station
 for index, row in stations_df.iterrows():
-    temperature = fetch_weather(api_username, api_password, row['latitude'], row['longitude'])
+    username, password = get_credentials()
+    temperature = fetch_weather(username, password, row['latitude'], row['longitude'])
     results_df = results_df.append({
         'Ort': row['Ort'],
         'latitude': row['latitude'],

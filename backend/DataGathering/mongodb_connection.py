@@ -1,9 +1,17 @@
 from pymongo.mongo_client import MongoClient
+import json
+
+# Load the MongoDB connection credentials from a JSON file
+with open("backend\\DataGathering\\pwd.json") as f:
+    credentials = json.load(f)
+    password = credentials["mongodb_credentials"]['password']
+    username = credentials["mongodb_credentials"]['username']
+    database = credentials["mongodb_credentials"]['database']
 
 
 def connect_mongodb():
     # MongoDB connection URI
-    uri = "mongodb+srv://weather:erhwLLotcHI8PTxj@weatherdata.zebph6n.mongodb.net/?retryWrites=true&w=majority&appName=WeatherData"
+    uri = f"mongodb+srv://{username}:{password}@{database}.zebph6n.mongodb.net/?retryWrites=true&w=majority&appName=WeatherData"
 # Create a new client and connect to the server
     client = MongoClient(uri)
 
