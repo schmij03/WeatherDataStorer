@@ -4,9 +4,4 @@ pymongo
 schedule
 requests
 datetime
-json
-urllib3.util.retry
-requests.adapters
-logging
-io
 numpy
