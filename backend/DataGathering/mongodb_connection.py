@@ -2,7 +2,7 @@ from pymongo.mongo_client import MongoClient
 import json
 
 # Load the MongoDB connection credentials from a JSON file
-with open("backend\\DataGathering\\pwd.json") as f:
+with open("backend/DataGathering/pwd.json") as f:
     credentials = json.load(f)
     password = credentials["mongodb_credentials"]['password']
     username = credentials["mongodb_credentials"]['username']

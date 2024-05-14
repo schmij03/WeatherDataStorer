@@ -11,12 +11,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Kopiere den Inhalt des aktuellen Verzeichnisses in das Arbeitsverzeichnis im Container
-COPY ./ /destination/path/
-COPY ./backend /destination/path/backend
-COPY ./backend/DataGathering /destination/path/backend/DataGathering
-COPY ./requirements.txt /destination/path/
-COPY main.py /destination/path/
-COPY ./Dockerfile /destination/path/
+# Kopiere den gesamten Inhalt des aktuellen Verzeichnisses in das Arbeitsverzeichnis im Container
+COPY . .
 
 # Führe das Hauptskript aus, wenn der Container startet
 CMD ["python", "main.py"]
