@@ -1,9 +1,5 @@
-from datetime import datetime
 import pandas as pd
 from meteostat import Hourly
-
-from Meteostat import Hourly
-import pandas as pd
 
 def fetch_weather_data(stations, start_date, end_date):
     """

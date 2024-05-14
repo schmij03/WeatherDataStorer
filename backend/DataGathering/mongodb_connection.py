@@ -26,3 +26,17 @@ def connect_mongodb():
     db = client["BA"]
     collection = db["WeatherData"]
     return db, collection
+
+def save_to_mongodb(df):
+    # Connect to the MongoDB server
+    db, collection = connect_mongodb()
+
+    # Convert the DataFrame to a dictionary
+    data = df.to_dict(orient='records')
+
+    # Insert the data into the MongoDB collection
+    collection.insert_many(data)
+
+    # Close the connection
+    db.client.close()
+    print("Data saved to MongoDB!")

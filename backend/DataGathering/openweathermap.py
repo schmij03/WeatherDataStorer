@@ -2,6 +2,12 @@ import requests
 import pandas as pd
 from datetime import datetime, timezone
 import json
+import logging
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+# Set up logging for debugging
+logging.basicConfig(level=logging.DEBUG)
 
 def get_api_key():
     with open('backend/DataGathering/pwd.json') as f:
@@ -9,104 +15,102 @@ def get_api_key():
         api_key = credentials['openweathermap_api_key']
     return api_key
 
-
 def fetch_weatherdata_hour(stations, start_end_openweather):
     start_datetime = datetime.strptime(str(start_end_openweather), "%Y-%m-%d %H:%M:%S")
     hour = int(start_datetime.timestamp())
+    openweather_final = pd.DataFrame()
     for index, stationopenweather in stations.iterrows():
-        # Prüfen, ob das 'id_openweather' Feld leer ist
         weather_openweather_df = get_weather_hour(int(stationopenweather['id_openweathermap']), hour)
-
-        # Füge das Ergebnis zum resultierenden DataFrame hinzu
-        openweather_final = pd.DataFrame()
         openweather_final = pd.concat([openweather_final, weather_openweather_df])
     return openweather_final
 
 def fetch_weatherdata_current(stations):
+    openweather_final = pd.DataFrame()
     for index, stationopenweather in stations.iterrows():
-        # Prüfen, ob das 'id_openweather' Feld leer ist
         weather_openweather_df = get_weather_current(int(stationopenweather['id_openweathermap']))
-
-        # Füge das Ergebnis zum resultierenden DataFrame hinzu
-        openweather_final = pd.DataFrame()
         openweather_final = pd.concat([openweather_final, weather_openweather_df])
     return openweather_final
 
-
-
-def get_weather_hour(city_id,hour):
-    api_key=get_api_key()
+def get_weather_hour(city_id, hour):
+    api_key = get_api_key()
     base_url = "https://api.openweathermap.org/data/2.5/weather?"
     complete_url = f"{base_url}id={city_id}&start={hour}&end={hour}&appid={api_key}&units=metric&lang=de"
-    response = requests.get(complete_url)
+    response = make_request(complete_url)
     weather_data = response.json()
     
     if weather_data['cod'] == 200:
-        # Extrahieren der notwendigen Daten
-        weather_details = {
-            'Zeit': [datetime.fromtimestamp(weather_data['dt'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Ort': [weather_data['name']],
-            'Land': [weather_data['sys']['country']],
-            'Temperatur': [weather_data['main']['temp']],
-            'Luftdruck': [weather_data['main']['pressure']],
-            'Luftfeuchtigkeit': [weather_data['main']['humidity']],
-            'Wetterbedingung': [weather_data['weather'][0]['description']],
-            'Windgeschwindigkeit': [weather_data['wind']['speed']],
-            'Windrichtung': [weather_data['wind']['deg']],
-            'Wolkenbedeckung': [weather_data['clouds']['all']],
-            'Niederschlagsmenge (letzte Stunde)': [weather_data.get('rain', {}).get('1h', 'Keine Daten')],
-            'Schneefallmenge (letzte Stunde)': [weather_data.get('snow', {}).get('1h', 'Keine Daten')],
-            'Windböen': [weather_data.get('wind', {}).get('gust', 'Keine Daten')],
-            'Sonnenaufgang': [datetime.fromtimestamp(weather_data['sys']['sunrise'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Sonnenuntergang': [datetime.fromtimestamp(weather_data['sys']['sunset'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Lat': [weather_data['coord']['lat']],
-            'Lon': [weather_data['coord']['lon']]
-        }
-        
-        # Konvertierung zu DataFrame
-        df_weather = pd.DataFrame(weather_details)
-        df_weather['Koordinaten']=df_weather['Lat'].astype(str)+','+df_weather['Lon'].astype(str)
-        df_weather.drop(columns=['Lat','Lon'],inplace=True)
-        df_weather['Taupunkt'] = df_weather['Temperatur'] - ((100 - df_weather['Luftfeuchtigkeit']) / 5)
+        weather_details = extract_weather_details(weather_data)
+        df_weather = create_weather_dataframe(weather_details)
         return df_weather
     else:
         print(f"Ortschaft mit ID {city_id} nicht gefunden oder API-Schlüssel ist ungültig.")
+        return pd.DataFrame()
 
 def get_weather_current(city_id):
-    api_key=get_api_key()
+    api_key = get_api_key()
     base_url = "https://api.openweathermap.org/data/2.5/weather?"
     complete_url = f"{base_url}id={city_id}&appid={api_key}&units=metric&lang=de"
-    response = requests.get(complete_url)
+    response = make_request(complete_url)
     weather_data = response.json()
     
     if weather_data['cod'] == 200:
-        # Extrahieren der notwendigen Daten
-        weather_details = {
-            'Zeit': [datetime.fromtimestamp(weather_data['dt'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Ort': [weather_data['name']],
-            'Land': [weather_data['sys']['country']],
-            'Temperatur': [weather_data['main']['temp']],
-            'Luftdruck': [weather_data['main']['pressure']],
-            'Luftfeuchtigkeit': [weather_data['main']['humidity']],
-            'Wetterbedingung': [weather_data['weather'][0]['description']],
-            'Windgeschwindigkeit': [weather_data['wind']['speed']],
-            'Windrichtung': [weather_data['wind']['deg']],
-            'Wolkenbedeckung': [weather_data['clouds']['all']],
-            'Niederschlagsmenge (letzte Stunde)': [weather_data.get('rain', {}).get('1h', 'Keine Daten')],
-            'Schneefallmenge (letzte Stunde)': [weather_data.get('snow', {}).get('1h', 'Keine Daten')],
-            'Windböen': [weather_data.get('wind', {}).get('gust', 'Keine Daten')],
-            'Sonnenaufgang': [datetime.fromtimestamp(weather_data['sys']['sunrise'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Sonnenuntergang': [datetime.fromtimestamp(weather_data['sys']['sunset'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
-            'Lat': [weather_data['coord']['lat']],
-            'Lon': [weather_data['coord']['lon']],
-            'Land': [weather_data['sys']['country']],
-        }
-        
-        # Konvertierung zu DataFrame
-        df_weather = pd.DataFrame(weather_details)
-        df_weather['Koordinaten']=df_weather['Lat'].astype(str)+','+df_weather['Lon'].astype(str)
-        df_weather.drop(columns=['Lat','Lon'],inplace=True)
-        df_weather['Taupunkt'] = df_weather['Temperatur'] - ((100 - df_weather['Luftfeuchtigkeit']) / 5)
+        weather_details = extract_weather_details(weather_data)
+        df_weather = create_weather_dataframe(weather_details)
         return df_weather
     else:
         print(f"Ortschaft mit ID {city_id} nicht gefunden oder API-Schlüssel ist ungültig.")
+        return pd.DataFrame()
+
+def make_request(url):
+    session = requests.Session()
+    retry = Retry(
+        total=5,
+        backoff_factor=0.1,
+        status_forcelist=[500, 502, 503, 504]
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
+    try:
+        response = session.get(url)  # SSL verification is enabled by default
+        response.raise_for_status()  # Raise HTTPError for bad responses
+        return response
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        raise
+
+
+def extract_weather_details(weather_data):
+    return {
+        'Zeit': [datetime.fromtimestamp(weather_data['dt'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
+        'Ort': [weather_data['name']],
+        'Land': [weather_data['sys']['country']],
+        'Temperatur': [weather_data['main']['temp']],
+        'Luftdruck': [weather_data['main']['pressure']],
+        'Luftfeuchtigkeit': [weather_data['main']['humidity']],
+        'Wetterbedingung': [weather_data['weather'][0]['description']],
+        'Windgeschwindigkeit': [weather_data['wind']['speed']],
+        'Windrichtung': [weather_data['wind']['deg']],
+        'Wolkenbedeckung': [weather_data['clouds']['all']],
+        'Niederschlagsmenge (letzte Stunde)': [weather_data.get('rain', {}).get('1h', 'Keine Daten')],
+        'Schneefallmenge (letzte Stunde)': [weather_data.get('snow', {}).get('1h', 'Keine Daten')],
+        'Windböen': [weather_data.get('wind', {}).get('gust', 'Keine Daten')],
+        'Sonnenaufgang': [datetime.fromtimestamp(weather_data['sys']['sunrise'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
+        'Sonnenuntergang': [datetime.fromtimestamp(weather_data['sys']['sunset'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
+        'Lat': [weather_data['coord']['lat']],
+        'Lon': [weather_data['coord']['lon']],
+    }
+
+def create_weather_dataframe(weather_details):
+    df_weather = pd.DataFrame(weather_details)
+    df_weather['Koordinaten'] = df_weather['Lat'].astype(str) + ',' + df_weather['Lon'].astype(str)
+    df_weather.drop(columns=['Lat', 'Lon'], inplace=True)
+    df_weather['Taupunkt'] = df_weather['Temperatur'] - ((100 - df_weather['Luftfeuchtigkeit']) / 5)
+    return df_weather
+
+# Example usage:
+if __name__ == "__main__":
+    stations = pd.DataFrame({'id_openweathermap': [7872644]})
+    current_weather = fetch_weatherdata_current(stations)
+    print(current_weather)

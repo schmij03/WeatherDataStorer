@@ -3,7 +3,7 @@ import googlemaps
 import json
 from getStationInformations import meteostat_filtered, meteomatics_filtered, openweathermap_filtered
 from GeoAdminData import main
-from mongodb_connection import save_to_mongodb
+
 # Load the data
 data2 = meteomatics_filtered
 data3 = meteostat_filtered
