@@ -104,7 +104,7 @@ def job():
     print('Not CH data saved successfully.')
 
 # Schedule the job every hour
-schedule.every().hour.at(":17").do(job)
+schedule.every().hour.at(":20").do(job)
 
 # Keep the script running
 while True:

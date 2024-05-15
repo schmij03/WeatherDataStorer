@@ -1,5 +1,5 @@
-# Verwende ein offizielles Python 3.12-Image als Basis
-FROM python:3.12-slim
+# Verwende ein offizielles Python 3.12-Image als Basis für ARM
+FROM amd64/python:3.12-slim
 
 # Setze das Arbeitsverzeichnis im Container
 WORKDIR /usr/src/app
@@ -10,7 +10,6 @@ COPY requirements.txt ./
 # Installiere die Python-Abhängigkeiten
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Kopiere den Inhalt des aktuellen Verzeichnisses in das Arbeitsverzeichnis im Container
 # Kopiere den gesamten Inhalt des aktuellen Verzeichnisses in das Arbeitsverzeichnis im Container
 COPY . .
 

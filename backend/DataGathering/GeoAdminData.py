@@ -60,9 +60,9 @@ def main():
     weather_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-aktuell/VQHA80.csv'
     rainfall_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-aktuell/VQHA98.csv'
     foehn_data_url = 'https://data.geo.admin.ch/ch.meteoschweiz.messwerte-foehn-10min/ch.meteoschweiz.messwerte-foehn-10min_de.csv'
-    weather_data_description = r'backend\DataGathering\GeoAdmin\WetterdatenBeschreibung.csv'
-    stations_description = r'backend\DataGathering\GeoAdmin\Stationsbeschreibungen.csv'
-    rainfall_description = r'backend\DataGathering\GeoAdmin\Niederschlagsmenge.csv'
+    weather_data_description = r'backend/DataGathering/GeoAdmin/WetterdatenBeschreibung.csv'
+    stations_description = r'backend/DataGathering/GeoAdmin/Stationsbeschreibungen.csv'
+    rainfall_description = r'backend/DataGathering/GeoAdmin/Niederschlagsmenge.csv'
 
     # Fetch data from different sources
     rainfall_df = fetch_csv_data_from_url(rainfall_data_url)
