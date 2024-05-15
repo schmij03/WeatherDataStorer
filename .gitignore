@@ -1,5 +1,5 @@
 # Ignore venv (virtual environment) directories
-myenv/
+venv/
 __pycache__/
 backend/DataGathering/__pycache__
 backend/DataGathering/__pycache__/
