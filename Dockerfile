@@ -1,5 +1,5 @@
 # Verwende ein offizielles Python 3.12-Image als Basis für ARM
-FROM amd64/python:3.12-slim
+FROM python:3.12-slim
 
 # Setze das Arbeitsverzeichnis im Container
 WORKDIR /usr/src/app
