@@ -1,48 +1,91 @@
+import pandas as pd
 import requests
+import json
 
-# Ersetzen Sie "YOUR_API_KEY" mit Ihrer API-Schlüssel
-API_KEY = "AIzaSyBPPQk2MCl9gqa18jjUtg-1fj5pmb2ABhc"
+def get_api_key():
+    with open('backend/DataGathering/pwd.json') as f:
+      credentials = json.load(f)
+      API_KEY = credentials['google_api_key']
+    return API_KEY
 
-# Breitengrad und Längengrad des Standorts
-LATITUDE = 46.7499
-LONGITUDE = 7.58522
+def get_pollen_forecast(latitude, longitude):
+    API_KEY=get_api_key()
+    DAYS = 1
+    # URL der API-Anfrage
+    url = f"https://pollen.googleapis.com/v1/forecast:lookup?key={API_KEY}&location.latitude={latitude}&location.longitude={longitude}&days={DAYS}&languageCode=de"
 
-# Anzahl der Tage, für die Vorhersagen abgerufen werden sollen
-DAYS = 1
+    # Senden Sie die GET-Anfrage und speichern Sie die Antwort
+    response = requests.get(url)
 
-# URL der API-Anfrage
-url = f"https://pollen.googleapis.com/v1/forecast:lookup?key={API_KEY}&location.latitude={LATITUDE}&location.longitude={LONGITUDE}&days={DAYS}"
+    results = []
 
-# Senden Sie die GET-Anfrage und speichern Sie die Antwort
-response = requests.get(url)
+    # Prüfen Sie, ob die Anfrage erfolgreich war
+    if response.status_code == 200:
+        try:
+            # Decodieren Sie die JSON-Antwort
+            data = response.json()
 
-# Prüfen Sie, ob die Anfrage erfolgreich war
-if response.status_code == 200:
-  # Decodieren Sie die JSON-Antwort
-  data = response.json()
+            # Überprüfen Sie, ob "dailyInfo" vorhanden ist
+            if "dailyInfo" in data:
+                # Durchlaufen Sie die täglichen Informationen
+                for day in data["dailyInfo"]:
+                    date = f"{day['date']['year']}-{day['date']['month']}-{day['date']['day']}"
 
-  # Überprüfen Sie, ob "dailyInfo" vorhanden ist
-  if "dailyInfo" in data:
-    # Durchlaufen Sie die täglichen Informationen
-    for day in data["dailyInfo"]:
-      # Drucken Sie das Datum
-      print(f"Datum: {day['date']['year']}-{day['date']['month']}-{day['date']['day']}")
+                    # Initialisiere Ergebnis-Dictionary
+                    result = {
+                        'Datum': date,
+                        'Latitude': latitude,
+                        'Longitude': longitude
+                    }
 
-      # Überprüfen Sie, ob "pollenTypeInfo" vorhanden ist
-      if "pollenTypeInfo" in day:
-        # Durchlaufen Sie die Pollentypen
-        for pollen_type in day["pollenTypeInfo"]:
-          # Drucken Sie den Pollentyp
-          print(f"{pollen_type['displayName']}: ", end='')
+                    # Informationen aus pollenTypeInfo extrahieren
+                    if "pollenTypeInfo" in day:
+                        for pollen_type in day["pollenTypeInfo"]:
+                            display_name = pollen_type.get('displayName', 'N/A')
+                            index_value = pollen_type.get('indexInfo', {}).get('value', 'N/A')
+                            result[display_name] = index_value
 
-          # Überprüfen Sie, ob "indexInfo" vorhanden ist, bevor Sie darauf zugreifen
-          if "indexInfo" in pollen_type:
-            print(f"{pollen_type['indexInfo']['value']} ({pollen_type['indexInfo']['category']})")
-          else:
-            print("Keine Indexinformationen verfügbar")
-      else:
-        print("Keine Polleninformationen für diesen Tag verfügbar.")
-  else:
-    print("Keine Polleninformationen in der Antwort gefunden.")
-else:
-  print(f"Fehler beim Abrufen der Pollenvorhersage: {response.status_code}")
+                    # Informationen aus plantInfo extrahieren
+                    if "plantInfo" in day:
+                        for plant in day["plantInfo"]:
+                            display_name = plant.get('displayName', 'N/A')
+                            index_value = plant.get('indexInfo', {}).get('value', 'N/A')
+                            result[display_name] = index_value
+
+                    results.append(result)
+            else:
+                print("Keine Polleninformationen in der Antwort gefunden.")
+        except Exception as e:
+            print(f"Fehler beim Verarbeiten der Antwort: {e}")
+    else:
+        print(f"Fehler beim Abrufen der Pollenvorhersage: {response.status_code}")
+
+    return results
+
+def collect_pollen_forecasts(dataframe):
+    all_results = []
+    
+    # Durch das DataFrame loopen und die Pollenvorhersage für jeden Eintrag abrufen
+    for index, row in dataframe.iterrows():
+        latitude, longitude = map(float, row['Koordinaten'].split(','))        
+        try:
+            results = get_pollen_forecast(latitude, longitude)
+            if results:
+                all_results.extend(results)
+        except Exception as e:
+            print(f"Fehler bei der Verarbeitung des Standorts {row['Koordinaten']}: {e}")
+    
+    # Ergebnisse in DataFrame umwandeln
+    result_df = pd.DataFrame(all_results)
+
+    if not result_df.empty:
+        # LatLng in eine Spalte zusammenführen und Latitude und Longitude entfernen
+        result_df['Koordinaten'] = result_df['Latitude'].astype(str) + ',' + result_df['Longitude'].astype(str)
+        result_df = result_df.drop(columns=['Latitude', 'Longitude'])
+    
+    return result_df
+
+allstations = pd.read_csv('backend/DataGathering/AllStations_with_location_info2.csv')
+pollen_info=allstations[['Koordinaten']]
+pollen_data = collect_pollen_forecasts(pollen_info)
+pollen_data.to_csv('backend/DataGathering/pollen_data.csv', index=False)

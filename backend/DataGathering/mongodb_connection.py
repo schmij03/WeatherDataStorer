@@ -40,3 +40,20 @@ def save_to_mongodb(df):
     # Close the connection
     db.client.close()
     print("Data saved to MongoDB!")
+
+
+def clear_mongodb():
+    # Connect to the MongoDB server
+    db, collection = connect_mongodb()
+
+    # Delete all documents in the collection
+    result = collection.delete_many({})
+
+    # Check if the deletion was successful
+    if result.deleted_count > 0:
+        print("Collection cleared.")
+    else:
+        print("No documents found to delete.")
+
+    # Close the connection
+    db.client.close()

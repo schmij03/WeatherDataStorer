@@ -6,6 +6,7 @@ from backend.DataGathering.Meteostat import fetch_weather_data
 from datetime import datetime
 from backend.DataGathering.openweathermap import fetch_weatherdata_hour, fetch_weatherdata_current
 from backend.DataGathering.mongodb_connection import save_to_mongodb
+#from backend.DataGathering.pollendata import collect_pollen_forecasts
 
 def job():
     empty_df = pd.read_csv('backend/DataGathering/empty_weather_data.csv')
@@ -46,7 +47,7 @@ def job():
                 data[base_col] = main_col
 
             data.drop(relevant_columns, axis=1, inplace=True)
-
+        data=data.drop(columns=['Datum'])
         data = data.drop_duplicates(subset=['Koordinaten'])
         return data
 
@@ -92,19 +93,37 @@ def job():
         all_weather_data = all_weather_data.drop(columns=['Zeit'])
         all_weather_data['Zeit'] = rounded_hour
         return all_weather_data
+    
+    #pollendata=pd.read_csv('backend/DataGathering/pollen_data.csv')
 
     pd_test = get_hourly_dataCH(allstations, rounded_hour)
+
+    #   Auskommentiert, da das API Limit erreicht wurde
+    #pd_test=pd.merge(pd_test,pollendata,on='Koordinaten',how='outer')
+    #pd_test = pd_test.drop(columns=['Datum'])
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_test)
     print('CH data saved successfully.')
 
     pd_test = get_current_data(allstations)
+    #   Auskommentiert, da das API Limit erreicht wurde
+    #pd_test=pd.merge(pd_test,pollendata,on='Koordinaten',how='outer')
+    #pd_test = pd_test.drop(columns=['Datum'])
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_test)
     print('Not CH data saved successfully.')
 
+# def get_pollen_data():
+#     allstations = pd.read_csv('backend/DataGathering/AllStations_with_location_info.csv')
+#     pollen_info=allstations[['Koordinaten']]
+#     pollen_data = collect_pollen_forecasts(pollen_info)
+#     pollen_data.to_csv('backend/DataGathering/pollen_data.csv', index=False)
+
 # Schedule the job every hour
-schedule.every().hour.at(":20").do(job)
+schedule.every().hour.at(":19").do(job)
+
+#   Auskommentiert, da das API Limit erreicht wurde
+#schedule.every(8).hour.at("00:00").do(get_pollen_data)
 
 # Keep the script running
 while True:

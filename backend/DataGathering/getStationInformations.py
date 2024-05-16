@@ -68,11 +68,11 @@ stations = stations.reset_index()
 stations['In Polygon'] = stations.apply(is_in_polygon, axis=1)
 
 filtered_stations = stations[stations['In Polygon']].drop(columns='In Polygon')
-filtered_stations = filtered_stations.rename(columns={'name': 'Ort', 'id': 'id_meteostat'})
+filtered_stations = filtered_stations.rename(columns={'name': 'Ort', 'id': 'id_meteostat', 'Location Lat,Lon': 'Koordinaten'})
 
 meteostat_filtered = filtered_stations.drop(columns=['latitude', 'longitude', 'region', 'hourly_start', 'hourly_end', 'daily_start', 'daily_end', 'monthly_start', 'monthly_end'])
 # Save to CSV
-meteostat_filtered.to_csv('backend/DataGathering/meteostat_stations_filtered.csv.csv')
+meteostat_filtered.to_csv('backend/DataGathering/meteostat_stations_filtered.csv')
 # Collecting data for each country
 dataframes = []
 for country in countries:
@@ -158,7 +158,7 @@ openweathermap_df = download_and_create_dataframe(url_openweathermap, country_co
 openweathermap_df['in_polygon'] = openweathermap_df.apply(is_in_polygon, axis=1)
 openweathermap_filtered = openweathermap_df[openweathermap_df['in_polygon']].drop(columns='in_polygon')
 openweathermap_filtered = openweathermap_filtered.drop(columns={'state'})
-openweathermap_filtered['Location Lat,Lon'] = openweathermap_filtered['latitude'].astype(str) + ',' + openweathermap_filtered['longitude'].astype(str)
+openweathermap_filtered['Koordinaten'] = openweathermap_filtered['latitude'].astype(str) + ',' + openweathermap_filtered['longitude'].astype(str)
 openweathermap_filtered = openweathermap_filtered.drop(columns=['latitude', 'longitude'])
 openweathermap_filtered = openweathermap_filtered.reset_index(drop=True).rename(columns={'id': 'id_openweathermap', 'name': 'Ort'})
 

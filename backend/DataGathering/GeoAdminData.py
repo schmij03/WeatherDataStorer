@@ -148,5 +148,5 @@ def main():
         weather_df = weather_df.drop(columns=['Kürzel', 'Stationstyp'])
         geoadmin_stations = weather_df[['Ort', 'Kanton', 'Koordinaten']].drop_duplicates()
         # Drop rows where Location Lat,Lon is "nan,nan"
-        weather_date = weather_df.iloc[0]['Datum']
-        return weather_date, weather_df, geoadmin_stations
+        weather_time = weather_df.iloc[0]['Datum']
+        return weather_time, weather_df, geoadmin_stations

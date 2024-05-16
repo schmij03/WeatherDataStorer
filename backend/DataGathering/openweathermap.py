@@ -108,9 +108,3 @@ def create_weather_dataframe(weather_details):
     df_weather.drop(columns=['Lat', 'Lon'], inplace=True)
     df_weather['Taupunkt'] = df_weather['Temperatur'] - ((100 - df_weather['Luftfeuchtigkeit']) / 5)
     return df_weather
-
-# Example usage:
-if __name__ == "__main__":
-    stations = pd.DataFrame({'id_openweathermap': [7872644]})
-    current_weather = fetch_weatherdata_current(stations)
-    print(current_weather)

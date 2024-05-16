@@ -5,21 +5,20 @@ from getStationInformations import meteostat_filtered, meteomatics_filtered, ope
 from GeoAdminData import main
 
 # Load the data
-data2 = meteomatics_filtered
-data3 = meteostat_filtered
-data4 = openweathermap_filtered
+
+data2 = meteostat_filtered
+data3 = openweathermap_filtered
 time_str, weather_geoadmin_df, geoadmin_stations = main()
 data = geoadmin_stations
-data = data.dropna(subset=['Location Lat,Lon'])
-data.to_csv('backend/DataGathering/GeoAdminStationsTEST.csv', index=False)
+
 # DataFrames zusammenführen
-df_combined_filtered = pd.merge(data, data2, on='Location Lat,Lon', how='outer', suffixes=('_geoadmin', '_meteom'))
-df_combined_filtered = pd.merge(df_combined_filtered, data3, on='Location Lat,Lon', how='outer', suffixes=('', '_meteos'))
-df_combined_filtered = pd.merge(df_combined_filtered, data4, on='Location Lat,Lon', how='outer', suffixes=('', '_openweather'))
+df_combined_filtered = pd.merge(data, data2, on='Koordinaten', how='outer', suffixes=('_geoadmin', '_meteos'))
+df_combined_filtered = pd.merge(df_combined_filtered, data3, on='Koordinaten', how='outer', suffixes=('', '_openweather'))
+
 
 # Konsolidieren doppelter Spalten (z.B. 'elevation_x' und 'elevation_y')
 # Generieren einer Liste der Spalten, die mit '_meteomatics', '_meteostat' und '_openweathermap' enden
-suffixes = ('_meteom', '_meteos', '_openweather', '_geoadmin')
+suffixes = ( '_meteos', '_openweather', '_geoadmin')
 # Generieren einer Liste der Spalten, die mit '_meteomatics', '_meteostat' oder '_openweathermap' enden
 to_consolidate = [col.split(suffix)[0] for col in df_combined_filtered.columns for suffix in suffixes if col.endswith(suffix)]
 
@@ -40,8 +39,7 @@ for col in to_consolidate:
     # Entfernen der alten Spalten mit Suffixen
     df_combined_filtered.drop([col + suffix for suffix in suffixes if (col + suffix) in df_combined_filtered.columns], axis=1, inplace=True)
 
-df_combined_filtered = df_combined_filtered.drop_duplicates(subset=['Location Lat,Lon'])
-df_combined_filtered.to_csv('backend/DataGathering/AllStationswithNaN.csv', index=False)
+df_combined_filtered = df_combined_filtered.drop_duplicates(subset=['Koordinaten'])
 # Initialize the Google Maps Client
 with open('backend/DataGathering/pwd.json') as f:
     credentials = json.load(f)
@@ -88,7 +86,7 @@ def update_location_info(row):
             row[col] = None
 
     # Holen der neuen Daten aus der Funktion
-    new_data = get_location_info(row["Location Lat,Lon"])
+    new_data = get_location_info(row["Koordinaten"])
     
     # Überprüfung und Aktualisierung der Daten
     # Vergleiche mit `None` sind sicher, auch wenn `row['country']` NA ist
@@ -110,5 +108,5 @@ for col in ['country', 'region', 'city']:
 df_combined_filtered[['country', 'region', 'city']] = df_combined_filtered.apply(update_location_info, axis=1)
 
 # Save the updated DataFrame back to a CSV
-output_path = 'backend/DataGathering/AllStations_with_location_info.csv'
+output_path = 'backend/DataGathering/AllStations_with_location_info2.csv'
 df_combined_filtered.to_csv(output_path, index=False)
