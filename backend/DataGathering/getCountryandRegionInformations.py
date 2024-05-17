@@ -1,7 +1,7 @@
 import pandas as pd
 import googlemaps
 import json
-from getStationInformations import meteostat_filtered, meteomatics_filtered, openweathermap_filtered
+from getStationInformations import meteostat_filtered, openweathermap_filtered
 from GeoAdminData import main
 
 # Daten laden
