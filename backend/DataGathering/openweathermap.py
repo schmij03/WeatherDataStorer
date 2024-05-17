@@ -6,19 +6,23 @@ import logging
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-# Set up logging for debugging
+# Einrichten des Loggings für Debugging-Zwecke
 logging.basicConfig(level=logging.DEBUG)
 
 def get_api_key():
+    # Laden des API-Schlüssels aus der JSON-Datei
     with open('backend/DataGathering/pwd.json') as f:
         credentials = json.load(f)
         api_key = credentials['openweathermap_api_key']
     return api_key
 
 def fetch_weatherdata_hour(stations, start_end_openweather):
+    # Konvertieren der Startzeit in ein datetime-Objekt und dann in einen UNIX-Zeitstempel
     start_datetime = datetime.strptime(str(start_end_openweather), "%Y-%m-%d %H:%M:%S")
     hour = int(start_datetime.timestamp())
     openweather_final = pd.DataFrame()
+    
+    # Abrufen der stündlichen Wetterdaten für jede Station
     for index, stationopenweather in stations.iterrows():
         weather_openweather_df = get_weather_hour(int(stationopenweather['id_openweathermap']), hour)
         openweather_final = pd.concat([openweather_final, weather_openweather_df])
@@ -26,6 +30,8 @@ def fetch_weatherdata_hour(stations, start_end_openweather):
 
 def fetch_weatherdata_current(stations):
     openweather_final = pd.DataFrame()
+    
+    # Abrufen der aktuellen Wetterdaten für jede Station
     for index, stationopenweather in stations.iterrows():
         weather_openweather_df = get_weather_current(int(stationopenweather['id_openweathermap']))
         openweather_final = pd.concat([openweather_final, weather_openweather_df])
@@ -38,6 +44,7 @@ def get_weather_hour(city_id, hour):
     response = make_request(complete_url)
     weather_data = response.json()
     
+    # Überprüfen des API-Antwortcodes und Extrahieren der Wetterdetails
     if weather_data['cod'] == 200:
         weather_details = extract_weather_details(weather_data)
         df_weather = create_weather_dataframe(weather_details)
@@ -53,6 +60,7 @@ def get_weather_current(city_id):
     response = make_request(complete_url)
     weather_data = response.json()
     
+    # Überprüfen des API-Antwortcodes und Extrahieren der Wetterdetails
     if weather_data['cod'] == 200:
         weather_details = extract_weather_details(weather_data)
         df_weather = create_weather_dataframe(weather_details)
@@ -73,15 +81,15 @@ def make_request(url):
     session.mount('https://', adapter)
     
     try:
-        response = session.get(url)  # SSL verification is enabled by default
-        response.raise_for_status()  # Raise HTTPError for bad responses
+        response = session.get(url)  # SSL-Verifizierung ist standardmäßig aktiviert
+        response.raise_for_status()  # HTTPError bei schlechten Antworten auslösen
         return response
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        print(f"Anfrage fehlgeschlagen: {e}")
         raise
 
-
 def extract_weather_details(weather_data):
+    # Extrahieren der relevanten Wetterdetails aus den API-Daten
     return {
         'Zeit': [datetime.fromtimestamp(weather_data['dt'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
         'Ort': [weather_data['name']],
@@ -103,6 +111,7 @@ def extract_weather_details(weather_data):
     }
 
 def create_weather_dataframe(weather_details):
+    # Erstellen eines DataFrames aus den Wetterdetails
     df_weather = pd.DataFrame(weather_details)
     df_weather['Koordinaten'] = df_weather['Lat'].astype(str) + ',' + df_weather['Lon'].astype(str)
     df_weather.drop(columns=['Lat', 'Lon'], inplace=True)

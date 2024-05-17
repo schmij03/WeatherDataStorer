@@ -1,59 +1,57 @@
 from pymongo.mongo_client import MongoClient
 import json
 
-# Load the MongoDB connection credentials from a JSON file
+# Laden der MongoDB-Verbindungsdaten aus einer JSON-Datei
 with open("backend/DataGathering/pwd.json") as f:
     credentials = json.load(f)
     password = credentials["mongodb_credentials"]['password']
     username = credentials["mongodb_credentials"]['username']
     database = credentials["mongodb_credentials"]['database']
 
-
 def connect_mongodb():
-    # MongoDB connection URI
+    # MongoDB-Verbindungs-URI
     uri = f"mongodb+srv://{username}:{password}@{database}.zebph6n.mongodb.net/?retryWrites=true&w=majority&appName=WeatherData"
-# Create a new client and connect to the server
+    # Erstellen eines neuen Clients und Verbindung zum Server
     client = MongoClient(uri)
 
-# Check if MongoDB connections are successful
+    # Überprüfen, ob die MongoDB-Verbindung erfolgreich ist
     try:
         client.admin.command('ping')
-        print("Successfully connected to MongoDB!")
+        print("Erfolgreich mit MongoDB verbunden!")
     except Exception as e:
-        print("Failed to connect to MongoDB:", e)
+        print("Fehler bei der Verbindung zu MongoDB:", e)
 
-# Select the specific databases and collections
+    # Auswählen der spezifischen Datenbanken und Sammlungen
     db = client["BA"]
     collection = db["WeatherData"]
     return db, collection
 
 def save_to_mongodb(df):
-    # Connect to the MongoDB server
+    # Verbindung zum MongoDB-Server herstellen
     db, collection = connect_mongodb()
 
-    # Convert the DataFrame to a dictionary
+    # Konvertieren des DataFrames in ein Dictionary
     data = df.to_dict(orient='records')
 
-    # Insert the data into the MongoDB collection
+    # Einfügen der Daten in die MongoDB-Sammlung
     collection.insert_many(data)
 
-    # Close the connection
+    # Schliessen der Verbindung
     db.client.close()
-    print("Data saved to MongoDB!")
-
+    print("Daten in MongoDB gespeichert!")
 
 def clear_mongodb():
-    # Connect to the MongoDB server
+    # Verbindung zum MongoDB-Server herstellen
     db, collection = connect_mongodb()
 
-    # Delete all documents in the collection
+    # Löschen aller Dokumente in der Sammlung
     result = collection.delete_many({})
 
-    # Check if the deletion was successful
+    # Überprüfen, ob das Löschen erfolgreich war
     if result.deleted_count > 0:
-        print("Collection cleared.")
+        print("Sammlung geleert.")
     else:
-        print("No documents found to delete.")
+        print("Keine Dokumente zum Löschen gefunden.")
 
-    # Close the connection
+    # Schliessen der Verbindung
     db.client.close()

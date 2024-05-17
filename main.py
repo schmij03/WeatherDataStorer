@@ -9,27 +9,30 @@ from backend.DataGathering.mongodb_connection import save_to_mongodb
 #from backend.DataGathering.pollendata import collect_pollen_forecasts
 
 def job():
+    # Leeren DataFrame aus CSV-Datei laden
     empty_df = pd.read_csv('backend/DataGathering/empty_weather_data.csv')
 
-    # Call the main function to obtain a time value
+    # Hauptfunktion aufrufen, um Zeitwert und GeoAdmin-Daten zu erhalten
     time_str, weather_geoadmin_df, geoadmin_stations = main()
     print(f"Original time (string): {time_str}")
 
-    # Convert the string into a datetime object using `datetime.strptime`
+    # Konvertieren des Zeitwerts von String zu datetime-Objekt
     time_obj = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
     print(f"Converted time (datetime): {time_obj}")
 
-    # Round to the nearest whole hour by zeroing out minutes and seconds
+    # Auf die nächste volle Stunde runden
     rounded_hour = time_obj.replace(minute=0, second=0, microsecond=0)
     print(f"Rounded to the nearest whole hour: {rounded_hour}")
     rounded_hour_csv = datetime.strptime(str(rounded_hour), "%Y-%m-%d %H:%M:%S").strftime("%Y%m%dT%H%M%S")
 
+    # Speichern der GeoAdmin-Daten als CSV-Datei
     weather_geoadmin_df.to_csv(f'backend/DataGathering/Files/GeoAdminData_{rounded_hour_csv}.csv', index=False)
     print('GeoAdmin data saved successfully.')
 
-    # Read Stations from csv file
+    # Alle Stationen aus CSV-Datei laden
     allstations = pd.read_csv('backend/DataGathering/AllStations_with_location_info.csv')
 
+    # Funktion zum Zusammenführen von Daten
     def merge_data(data):
         suffixes = ('_meteom', '_meteos', '_openweather', '_geoadmin')
         to_consolidate = list({col.split(suffix)[0] for suffix in suffixes for col in data.columns if col.endswith(suffix)})
@@ -47,10 +50,11 @@ def job():
                 data[base_col] = main_col
 
             data.drop(relevant_columns, axis=1, inplace=True)
-        data=data.drop(columns=['Datum'])
+        data = data.drop(columns=['Datum'])
         data = data.drop_duplicates(subset=['Koordinaten'])
         return data
 
+    # Funktion zum Abrufen aktueller Wetterdaten
     def get_current_data(allstations):
         allstations = allstations[allstations['country'] != 'CH']
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -69,6 +73,7 @@ def job():
         all_weather_data['Zeit'] = rounded_time
         return all_weather_data
 
+    # Funktion zum Abrufen stündlicher Wetterdaten für die Schweiz
     def get_hourly_dataCH(allstations, rounded_hour):
         current_hour = datetime.now().hour
         allstations = allstations[allstations['country'] == 'CH']
@@ -86,7 +91,6 @@ def job():
             meteostat_data = fetch_weather_data(stations_meteostat, rounded_hour, rounded_hour)
             all_weather_data = pd.merge(weather_geoadmin_df, meteostat_data, on='Koordinaten', how='outer', suffixes=('_geoadmin', '_meteos'))
             all_weather_data = all_weather_data.drop_duplicates()
-        # drop first row of all_weather_data
         all_weather_data = all_weather_data[1:]
         all_weather_data = merge_data(all_weather_data)
         all_weather_data['Land'] = "CH"
@@ -96,19 +100,23 @@ def job():
     
     #pollendata=pd.read_csv('backend/DataGathering/pollen_data.csv')
 
+    # Stündliche Wetterdaten für die Schweiz abrufen
     pd_test = get_hourly_dataCH(allstations, rounded_hour)
 
-    #   Auskommentiert, da das API Limit erreicht wurde
+    #   Auskommentiert, da das API Limit für Pollen erreicht wurde
     #pd_test=pd.merge(pd_test,pollendata,on='Koordinaten',how='outer')
     #pd_test = pd_test.drop(columns=['Datum'])
+
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_test)
     print('CH data saved successfully.')
 
+    # Aktuelle Wetterdaten abrufen
     pd_test = get_current_data(allstations)
-    #   Auskommentiert, da das API Limit erreicht wurde
+    #   Auskommentiert, da das API Limit für Pollen erreicht wurde
     #pd_test=pd.merge(pd_test,pollendata,on='Koordinaten',how='outer')
     #pd_test = pd_test.drop(columns=['Datum'])
+
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_test)
     print('Not CH data saved successfully.')
@@ -119,13 +127,13 @@ def job():
 #     pollen_data = collect_pollen_forecasts(pollen_info)
 #     pollen_data.to_csv('backend/DataGathering/pollen_data.csv', index=False)
 
-# Schedule the job every hour
+# Job jede Stunde ausführen
 schedule.every().hour.at(":19").do(job)
 
-#   Auskommentiert, da das API Limit erreicht wurde
+#   Auskommentiert, da das API Limit für Pollen erreicht wurde
 #schedule.every(8).hour.at("00:00").do(get_pollen_data)
 
-# Keep the script running
+# Skript am Laufen halten
 while True:
     schedule.run_pending()
     time.sleep(1)
