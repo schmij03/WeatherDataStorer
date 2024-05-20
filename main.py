@@ -112,8 +112,7 @@ def job():
     #pd_CH = pd_CH.drop(columns=['Datum'])
 
     print("Starting to save data to MongoDB")
-    pd_CH.to_csv(f'backend/DataGathering/Files/CHData_{rounded_hour_csv}.csv', index=False)
-    #save_to_mongodb(pd_CH)
+    save_to_mongodb(pd_CH)
     print('CH data saved successfully.')
 
     # Aktuelle Wetterdaten abrufen
@@ -123,8 +122,7 @@ def job():
     #pd_rest = pd_rest.drop(columns=['Datum'])
 
     print("Starting to save data to MongoDB")
-    pd_rest.to_csv(f'backend/DataGathering/Files/NotCHData_{rounded_hour_csv}.csv', index=False)
-    #save_to_mongodb(pd_rest)
+    save_to_mongodb(pd_rest)
     print('Not CH data saved successfully.')
 
 # def get_pollen_data():
