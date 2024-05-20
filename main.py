@@ -6,7 +6,6 @@ from backend.DataGathering.Meteostat import fetch_weather_data
 from datetime import datetime
 from backend.DataGathering.openweathermap import fetch_weatherdata_hour, fetch_weatherdata_current
 from backend.DataGathering.mongodb_connection import save_to_mongodb
-import xml.etree.ElementTree as ET
 from backend.DataGathering.region_mapping import get_region
 #from backend.DataGathering.pollendata import collect_pollen_forecasts
 
@@ -26,10 +25,7 @@ def job():
     rounded_hour = time_obj.replace(minute=0, second=0, microsecond=0)
     print(f"Rounded to the nearest whole hour: {rounded_hour}")
     rounded_hour_csv = datetime.strptime(str(rounded_hour), "%Y-%m-%d %H:%M:%S").strftime("%Y%m%dT%H%M%S")
-
-    # Speichern der GeoAdmin-Daten als CSV-Datei
-    weather_geoadmin_df.to_csv(f'backend/DataGathering/Files/GeoAdminData_{rounded_hour_csv}.csv', index=False)
-    print('GeoAdmin data saved successfully.')
+    print('GeoAdmin data gathered successfully.')
 
     # Alle Stationen aus CSV-Datei laden
     allstations = pd.read_csv('backend/DataGathering/AllStations_with_location_info.csv')
@@ -102,40 +98,21 @@ def job():
         all_weather_data=all_weather_data.apply(get_region, axis=1)
         return all_weather_data
     
-    #pollendata=pd.read_csv('backend/DataGathering/pollen_data.csv')
-
     # Stündliche Wetterdaten für die Schweiz abrufen
     pd_CH = get_hourly_dataCH(allstations, rounded_hour)
-
-    #   Auskommentiert, da das API Limit für Pollen erreicht wurde
-    #pd_CH=pd.merge(pd_CH,pollendata,on='Koordinaten',how='outer')
-    #pd_CH = pd_CH.drop(columns=['Datum'])
-
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_CH)
     print('CH data saved successfully.')
 
     # Aktuelle Wetterdaten abrufen
     pd_rest = get_current_data(allstations)
-    #   Auskommentiert, da das API Limit für Pollen erreicht wurde
-    #pd_rest=pd.merge(pd_rest,pollendata,on='Koordinaten',how='outer')
-    #pd_rest = pd_rest.drop(columns=['Datum'])
-
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_rest)
     print('Not CH data saved successfully.')
 
-# def get_pollen_data():
-#     allstations = pd.read_csv('backend/DataGathering/AllStations_with_location_info.csv')
-#     pollen_info=allstations[['Koordinaten']]
-#     pollen_data = collect_pollen_forecasts(pollen_info)
-#     pollen_data.to_csv('backend/DataGathering/pollen_data.csv', index=False)
 
 # Job jede Stunde ausführen
 schedule.every().hour.at(":19").do(job)
-
-#   Auskommentiert, da das API Limit für Pollen erreicht wurde
-#schedule.every(8).hour.at("00:00").do(get_pollen_data)
 
 # Skript am Laufen halten
 while True:
