@@ -6,6 +6,8 @@ from backend.DataGathering.Meteostat import fetch_weather_data
 from datetime import datetime
 from backend.DataGathering.openweathermap import fetch_weatherdata_hour, fetch_weatherdata_current
 from backend.DataGathering.mongodb_connection import save_to_mongodb
+import xml.etree.ElementTree as ET
+from backend.DataGathering.region_mapping import get_region
 #from backend.DataGathering.pollendata import collect_pollen_forecasts
 
 def job():
@@ -34,7 +36,7 @@ def job():
 
     # Funktion zum Zusammenführen von Daten
     def merge_data(data):
-        suffixes = ('_meteom', '_meteos', '_openweather', '_geoadmin')
+        suffixes = ('_meteos', '_openweather', '_geoadmin')
         to_consolidate = list({col.split(suffix)[0] for suffix in suffixes for col in data.columns if col.endswith(suffix)})
 
         for base_col in to_consolidate:
@@ -80,7 +82,7 @@ def job():
         stations_meteostat = allstations[allstations['id_meteostat'].notna()]
         stations_openweather = allstations[allstations['id_openweathermap'].notna()]
         all_weather_data = empty_df
-        if current_hour % 2 == 0:
+        if current_hour % 2 != 0:
             meteostat_data = fetch_weather_data(stations_meteostat, rounded_hour, rounded_hour)
             openweather_data = fetch_weatherdata_hour(stations_openweather, rounded_hour)
 
@@ -96,29 +98,33 @@ def job():
         all_weather_data['Land'] = "CH"
         all_weather_data = all_weather_data.drop(columns=['Zeit'])
         all_weather_data['Zeit'] = rounded_hour
+        all_weather_data = all_weather_data.drop(columns=['Region'])
+        all_weather_data=all_weather_data.apply(get_region, axis=1)
         return all_weather_data
     
     #pollendata=pd.read_csv('backend/DataGathering/pollen_data.csv')
 
     # Stündliche Wetterdaten für die Schweiz abrufen
-    pd_test = get_hourly_dataCH(allstations, rounded_hour)
+    pd_CH = get_hourly_dataCH(allstations, rounded_hour)
 
     #   Auskommentiert, da das API Limit für Pollen erreicht wurde
-    #pd_test=pd.merge(pd_test,pollendata,on='Koordinaten',how='outer')
-    #pd_test = pd_test.drop(columns=['Datum'])
+    #pd_CH=pd.merge(pd_CH,pollendata,on='Koordinaten',how='outer')
+    #pd_CH = pd_CH.drop(columns=['Datum'])
 
     print("Starting to save data to MongoDB")
-    save_to_mongodb(pd_test)
+    pd_CH.to_csv(f'backend/DataGathering/Files/CHData_{rounded_hour_csv}.csv', index=False)
+    #save_to_mongodb(pd_CH)
     print('CH data saved successfully.')
 
     # Aktuelle Wetterdaten abrufen
-    pd_test = get_current_data(allstations)
+    pd_rest = get_current_data(allstations)
     #   Auskommentiert, da das API Limit für Pollen erreicht wurde
-    #pd_test=pd.merge(pd_test,pollendata,on='Koordinaten',how='outer')
-    #pd_test = pd_test.drop(columns=['Datum'])
+    #pd_rest=pd.merge(pd_rest,pollendata,on='Koordinaten',how='outer')
+    #pd_rest = pd_rest.drop(columns=['Datum'])
 
     print("Starting to save data to MongoDB")
-    save_to_mongodb(pd_test)
+    pd_rest.to_csv(f'backend/DataGathering/Files/NotCHData_{rounded_hour_csv}.csv', index=False)
+    #save_to_mongodb(pd_rest)
     print('Not CH data saved successfully.')
 
 # def get_pollen_data():

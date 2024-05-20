@@ -3,6 +3,7 @@ import googlemaps
 import json
 from getStationInformations import meteostat_filtered, openweathermap_filtered
 from GeoAdminData import main
+from backend.DataGathering.region_mapping import get_region
 
 # Daten laden
 data2 = meteostat_filtered
@@ -58,20 +59,18 @@ def get_location_info(latlon):
             for component in result[0]['address_components']:
                 if 'country' in component['types']:
                     country = component['short_name'].upper()
-                if 'administrative_area_level_1' in component['types']:
-                    region = component['long_name']
                 if 'locality' in component['types']:
                     city = component['long_name']
-            return {"country": country, "region": region, "city": city}
+            return {"country": country,  "city": city}
     except Exception as e:
         print(f"Fehler bei der API-Anfrage: {e} - mit Koordinaten {latlon}")
-        return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
+        return {"country": "Unknown", "city": "Unknown"}
 
-    return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
+    return {"country": "Unknown", "city": "Unknown"}
 
 def update_location_info(row):
     # Sicherstellen, dass alle notwendigen Spalten vorhanden sind
-    for col in ['country', 'region', 'city']:
+    for col in ['country', 'city']:
         if pd.isna(row[col]):
             row[col] = None
 
@@ -81,21 +80,20 @@ def update_location_info(row):
     # Überprüfen und Aktualisieren der Daten
     if row['country'] is None or row['country'] != new_data['country']:
         row['country'] = new_data['country']
-    if row['region'] is None or row['region'] != new_data['region']:
-        row['region'] = new_data['region']
     if row['city'] is None or row['city'] != new_data['city']:
         row['city'] = new_data['city']
 
-    return pd.Series([row['country'], row['region'], row['city']], index=['country', 'region', 'city'])
+    return pd.Series([row['country'], row['city']], index=['country' 'city'])
 
 # Sicherstellen, dass die Spalten vorhanden sind, bevor die apply-Funktion aufgerufen wird
-for col in ['country', 'region', 'city']:
+for col in ['country', 'city']:
     if col not in df_combined_filtered.columns:
         df_combined_filtered[col] = None
 
 # Standortinformationen aktualisieren
-df_combined_filtered[['country', 'region', 'city']] = df_combined_filtered.apply(update_location_info, axis=1)
+df_combined_filtered[['country', 'city']] = df_combined_filtered.apply(update_location_info, axis=1)
 
+df_combined_filtered=df_combined_filtered.apply(get_region, axis=1)
 # Speichern des aktualisierten DataFrames in eine CSV-Datei
 output_path = 'backend/DataGathering/AllStations_with_location_info.csv'
 df_combined_filtered.to_csv(output_path, index=False)
