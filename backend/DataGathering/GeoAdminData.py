@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 from io import StringIO
 import numpy as np
-
+from region_mapping import get_region
 # Funktion zum Laden von CSV-Daten aus einer Datei
 def load_csv_data(filepath):
     try:
@@ -146,7 +146,8 @@ def main():
         weather_df = weather_df.rename(columns=mapping)
         weather_df = weather_df[weather_df['Koordinaten'] != 'nan,nan']
         weather_df = weather_df.drop(columns=['Kürzel', 'Stationstyp'])
-        geoadmin_stations = weather_df[['Ort', 'Kanton', 'Koordinaten']].drop_duplicates()
+        weather_df = weather_df.apply(get_region, axis=1)
+        geoadmin_stations = weather_df[['Ort', 'Kanton', 'Koordinaten','Region']].drop_duplicates()
         
         # Entfernen von Zeilen, bei denen die Koordinaten "nan,nan" sind
         weather_time = weather_df.iloc[0]['Datum']
