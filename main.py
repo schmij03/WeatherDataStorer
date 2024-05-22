@@ -6,7 +6,7 @@ from backend.DataGathering.Meteostat import fetch_weather_data
 from datetime import datetime
 from backend.DataGathering.openweathermap import fetch_weatherdata_hour, fetch_weatherdata_current
 from backend.DataGathering.mongodb_connection import save_to_mongodb
-from backend.DataGathering.region_mapping import get_region
+from backend.DataGathering.region_mapping import get_region, get_regionFR
 #from backend.DataGathering.pollendata import collect_pollen_forecasts
 
 def job():
@@ -68,7 +68,7 @@ def job():
         all_weather_data = all_weather_data[1:]
         all_weather_data = merge_data(all_weather_data)
         all_weather_data = all_weather_data.drop(columns=['Zeit'])
-        all_weather_data['Zeit'] = rounded_time
+        all_weather_data['Zeit'] = rounded_time        
         return all_weather_data
 
     # Funktion zum Abrufen stündlicher Wetterdaten für die Schweiz

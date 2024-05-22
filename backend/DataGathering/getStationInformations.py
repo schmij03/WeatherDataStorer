@@ -37,10 +37,9 @@ def fetch_and_prepare_stations(countries):
     return result
 
 # Liste der Länder und Ländercodes
-countries = ["switzerland", "italy", "austria", "germany", "france"]
-country_codes = ['CH', 'DE', 'AT', 'IT', 'FR']
-stations = fetch_and_prepare_stations(country_codes)
+country_codes = ['CH', 'DE', 'AT', 'IT', 'FR','LI']
 
+stations = fetch_and_prepare_stations(country_codes)
 stations = stations.reset_index()
 
 # Stationen innerhalb des Polygons filtern
