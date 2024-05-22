@@ -49,7 +49,7 @@ def get_location_info(latlon):
             raise ValueError("Ungültige Koordinaten")
     except (ValueError, TypeError):
         print(f"Fehler: Ungültige Koordinaten {latlon}")
-        return {"country": "Unknown", "region": "Unknown", "city": "Unknown"}
+        return {"country": "Unknown", "city": "Unknown"}
 
     try:
         # Verwendung der Google Maps API zur Umkehrsuche der Geokodierung
