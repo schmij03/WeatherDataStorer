@@ -6,6 +6,8 @@ from backend.DataGathering.Meteostat import fetch_weather_data
 from datetime import datetime
 from backend.DataGathering.openweathermap import fetch_weatherdata_hour, fetch_weatherdata_current
 from backend.DataGathering.mongodb_connection import save_to_mongodb
+from backend.DataGathering.mergeAllStations import consolidate_weather_data
+
 
 def job():
     # Leeren DataFrame aus CSV-Datei laden
@@ -109,6 +111,9 @@ def job():
 
 # Job jede Stunde ausführen
 schedule.every().hour.at(":19").do(job)
+
+# Job jeden Monat ausführen
+schedule.every(5).weeks.at("00:00").do(consolidate_weather_data)
 
 # Skript am Laufen halten
 while True:

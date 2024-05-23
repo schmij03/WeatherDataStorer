@@ -4,7 +4,7 @@ from meteostat import Stations
 from shapely.geometry import Polygon, Point
 import requests
 import gzip
-from region_mapping import get_region
+from backend.DataGathering.region_mapping import get_region
 
 # Polygon-Koordinaten aus JSON-Datei laden und Polygon-Objekt erstellen
 with open('backend/DataGathering/rendercoordinates.json', 'r') as file:
