@@ -1,0 +1,8 @@
+{
+  "openweathermap_api_key": "06f4684f04692eef55eaca387497e196",    
+  "mongodb_credentials": {
+    "username": "weather",
+    "password": "erhwLLotcHI8PTxj",
+    "database": "weatherdata"
+  }
+}

@@ -3,5 +3,5 @@ venv/
 __pycache__/
 backend/DataGathering/__pycache__
 backend/DataGathering/__pycache__/
-backend/DataGathering/Access_Information/*.json
+#backend/DataGathering/Access_Information/*.json
 
