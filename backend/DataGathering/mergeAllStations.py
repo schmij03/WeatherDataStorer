@@ -31,7 +31,7 @@ def consolidate_weather_data():
         df_combined_filtered.drop([col + suffix for suffix in suffixes if (col + suffix) in df_combined_filtered.columns], axis=1, inplace=True)
 
     df_combined_filtered = df_combined_filtered.drop_duplicates(subset=['Koordinaten'])
-
+    df_combined_filtered = df_combined_filtered.drop(columns=['Kanton'])
     # Speichern des aktualisierten DataFrames in eine CSV-Datei
     output_path = 'backend/DataGathering/AllStations_with_location_info.csv'
     df_combined_filtered.to_csv(output_path, index=False)

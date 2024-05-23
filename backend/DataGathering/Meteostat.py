@@ -41,7 +41,7 @@ def process_station_data(data, station):
         'prcp': 'Niederschlagsmenge (letzte Stunde)',
         'snow': 'Schneefallmenge (letzte Stunde)',
         'wdir': 'Windrichtung',
-        'wspd': 'Windgeschwindigkeit',
+        'wspd': 'Windgeschwindigkeit in km/h',
         'wpgt': 'Windböen',
         'pres': 'Luftdruck',
         'tsun': 'Sonneneinstrahlungsdauer'

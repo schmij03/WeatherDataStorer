@@ -128,7 +128,7 @@ def main():
             "Relative Luftfeuchtigkeit 2 m über Boden; Momentanwert": "Luftfeuchtigkeit",
             "Niederschlag; Zehnminutensumme": "Niederschlagsmenge (letzte Stunde)",
             "Windrichtung; Zehnminutenmittel": "Windrichtung",
-            "Windgeschwindigkeit; Zehnminutenmittel": "Windgeschwindigkeit",
+            "Windgeschwindigkeit in km/h; Zehnminutenmittel": "Windgeschwindigkeit",
             "Böenspitze (Sekundenböe); Maximum": "Windböen",
             "Luftdruck auf Stationshöhe (QFE); Momentanwert": "Luftdruck",
             "Sonnenscheindauer; Zehnminutensumme": "Sonneneinstrahlungsdauer",
@@ -138,7 +138,7 @@ def main():
             "Geopotentielle Höhe der 850 hPa-Fläche; Momentanwert": "Geopotentielle Höhe der 850 hPa-Fläche",
             "Geopotentielle Höhe der 700 hPa-Fläche; Momentanwert": "Geopotentielle Höhe der 700 hPa-Fläche",
             "Windrichtung vektoriell; Zehnminutenmittel; Instrument 1": "Windrichtung vektoriell",
-            "Windgeschwindigkeit Turm; Zehnminutenmittel": "Windgeschwindigkeit Turm",
+            "Windgeschwindigkeit Turm in km/h; Zehnminutenmittel": "Windgeschwindigkeit Turm",
             "Böenspitze (Sekundenböe) Turm; Maximum": "Böenspitze Turm",
             "Relative Luftfeuchtigkeit Turm; Momentanwert": "Relative Luftfeuchtigkeit Turm",
             "Ort": "Ort",
@@ -148,7 +148,7 @@ def main():
         weather_df = weather_df[weather_df['Koordinaten'] != 'nan,nan']
         weather_df = weather_df.drop(columns=['Kürzel', 'Stationstyp'])
         weather_df = weather_df.apply(get_region, axis=1)
-        geoadmin_stations = weather_df[['Ort', 'Kanton', 'Koordinaten','Region']].drop_duplicates()
+        geoadmin_stations = weather_df[['Ort', 'Koordinaten','Region']].drop_duplicates()
         
         # Entfernen von Zeilen, bei denen die Koordinaten "nan,nan" sind
         weather_time = weather_df.iloc[0]['Datum']
