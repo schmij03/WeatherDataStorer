@@ -1,5 +1,3 @@
-import xml.etree.ElementTree as ET
-import pandas as pd
 from shapely.geometry import Polygon, Point
 import json
 
