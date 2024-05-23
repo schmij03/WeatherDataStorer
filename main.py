@@ -113,7 +113,7 @@ def job():
 schedule.every().hour.at(":19").do(job)
 
 # Job jeden Monat ausführen
-schedule.every(5).weeks.at("00:00").do(consolidate_weather_data)
+schedule.every(30).days.at("00:00").do(consolidate_weather_data)
 
 # Skript am Laufen halten
 while True:
