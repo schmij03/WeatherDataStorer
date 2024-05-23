@@ -18,3 +18,14 @@ WeatherDataStorer ist eine innovative Softwarelösung, die darauf abzielt, Wette
 2. **Abhängigkeiten installieren**: `pip install -r requirements.txt`
 3. **Anwendung starten**: `python app.py`
 
+## Docker Image
+1.**Docker Installieren**: Falls noch nicht vorhanden Docker installieren.
+2. **Repository klonen**: `docker pull schmij03/weatherdatastorer:latest`
+3. **Anwendung starten**: `docker run schmij03/weatherdatastorer:latesttorer:latest` heruntergeladen werden.
+
+## Docker Image für RaspberryPi
+1.**Docker Installieren**: Falls noch nicht vorhanden Docker installieren.
+2. **Repository klonen**: `docker pull schmij03/weatherdata-raspi:latest`
+3. **Anwendung starten**: `docker run schmij03/weatherdata-raspi:latesttorer:latest` heruntergeladen werden.
+
+
