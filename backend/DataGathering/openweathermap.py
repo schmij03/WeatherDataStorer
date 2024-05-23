@@ -26,6 +26,7 @@ def fetch_weatherdata_hour(stations, start_end_openweather):
     for index, stationopenweather in stations.iterrows():
         weather_openweather_df = get_weather_hour(int(stationopenweather['id_openweathermap']), hour)
         openweather_final = pd.concat([openweather_final, weather_openweather_df])
+        openweather_final['Region'] = stationopenweather['Region']
     return openweather_final
 
 def fetch_weatherdata_current(stations):
@@ -35,6 +36,7 @@ def fetch_weatherdata_current(stations):
     for index, stationopenweather in stations.iterrows():
         weather_openweather_df = get_weather_current(int(stationopenweather['id_openweathermap']))
         openweather_final = pd.concat([openweather_final, weather_openweather_df])
+        openweather_final['Region'] = stationopenweather['Region']
     return openweather_final
 
 def get_weather_hour(city_id, hour):

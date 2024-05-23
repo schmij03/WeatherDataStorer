@@ -91,8 +91,7 @@ def job():
         all_weather_data = merge_data(all_weather_data)
         all_weather_data['Land'] = "CH"
         all_weather_data = all_weather_data.drop(columns=['Zeit'])
-        all_weather_data['Zeit'] = rounded_hour
-        all_weather_data = all_weather_data.drop(columns=['Region'])
+        all_weather_data['Zeit'] = rounded_hour        
         return all_weather_data
     
     # Stündliche Wetterdaten für die Schweiz abrufen
