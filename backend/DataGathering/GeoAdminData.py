@@ -4,6 +4,7 @@ from datetime import datetime
 from io import StringIO
 import numpy as np
 from region_mapping import get_region
+
 # Funktion zum Laden von CSV-Daten aus einer Datei
 def load_csv_data(filepath):
     try:

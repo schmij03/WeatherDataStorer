@@ -4,6 +4,7 @@ from meteostat import Stations
 from shapely.geometry import Polygon, Point
 import requests
 import gzip
+from region_mapping import get_region
 
 # Polygon-Koordinaten aus JSON-Datei laden und Polygon-Objekt erstellen
 with open('backend/DataGathering/rendercoordinates.json', 'r') as file:
@@ -49,7 +50,8 @@ filtered_stations = filtered_stations.rename(columns={'name': 'Ort', 'id': 'id_m
 
 # Unnötige Spalten entfernen und gefilterte Stationen speichern
 meteostat_filtered = filtered_stations.drop(columns=['latitude', 'longitude', 'region', 'hourly_start', 'hourly_end', 'daily_start', 'daily_end', 'monthly_start', 'monthly_end'])
-meteostat_filtered.to_csv('backend/DataGathering/meteostat_stations_filtered.csv', index=False)
+meteostat_filtered = meteostat_filtered.apply(get_region, axis=1)
+
 
 def download_and_create_dataframe(url, country_codes):
     response = requests.get(url)
@@ -79,8 +81,6 @@ openweathermap_filtered = openweathermap_filtered.drop(columns={'state'})
 openweathermap_filtered['Koordinaten'] = openweathermap_filtered['latitude'].astype(str) + ',' + openweathermap_filtered['longitude'].astype(str)
 openweathermap_filtered = openweathermap_filtered.drop(columns=['latitude', 'longitude'])
 openweathermap_filtered = openweathermap_filtered.reset_index(drop=True).rename(columns={'id': 'id_openweathermap', 'name': 'Ort'})
+openweathermap_filtered = openweathermap_filtered.apply(get_region, axis=1)
 
-# Gefilterte Daten in CSV speichern
-openweathermap_filtered.to_csv('backend/DataGathering/openweathermap_stations_filtered.csv', index=False)
-
-print("Alle Stationen wurden gefiltert und in CSV-Dateien gespeichert.")
+print("Alle Stationen wurden gefiltert.")
