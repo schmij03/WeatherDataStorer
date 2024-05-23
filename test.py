@@ -69,6 +69,7 @@ def update_documents():
     updates = []
     for doc in documents:
         region = get_region(doc)
+        print(f"Updating document ID: {doc['_id']} with region: {region}")
         updates.append(UpdateOne({'_id': doc['_id']}, {'$set': {'Region': region}}))
 
     if updates:
