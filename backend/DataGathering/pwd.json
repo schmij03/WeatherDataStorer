@@ -1,9 +1,0 @@
-{
-    "openweathermap_api_key": "YOUR_API_KEY",    
-    "mongodb_credentials": {
-      "username": "USER_NAME",
-      "password": "PASSWORD",
-      "database": "DATABASE_NAME"
-    }
-  }
-  
