@@ -81,6 +81,11 @@ openweathermap_filtered = openweathermap_filtered.drop(columns={'state'})
 openweathermap_filtered['Koordinaten'] = openweathermap_filtered['latitude'].astype(str) + ',' + openweathermap_filtered['longitude'].astype(str)
 openweathermap_filtered = openweathermap_filtered.drop(columns=['latitude', 'longitude'])
 openweathermap_filtered = openweathermap_filtered.reset_index(drop=True).rename(columns={'id': 'id_openweathermap', 'name': 'Ort'})
+op=openweathermap_filtered
+openweathermap_filtered=openweathermap_filtered[openweathermap_filtered['Koordinaten']!="47.457748,8.555775"]
+op=op[op['Koordinaten']=="47.457748,8.555775"]
+op['Ort']="Zürich Flughafen"
+openweathermap_filtered=pd.merge(openweathermap_filtered,op,how='outer')
 openweathermap_filtered = openweathermap_filtered.apply(get_region, axis=1)
 
 print("Alle Stationen wurden gefiltert.")

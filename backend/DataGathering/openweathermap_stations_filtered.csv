@@ -354,8 +354,8 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2658576,Sitten,CH,"46.22908,7.35942",Conthey-Fully
 2658577,Sins,CH,"47.192162,8.39578",Emmen-Hochdorf
 2658581,Simplon Dorf,CH,"46.194511,8.05753",südliches Simplongebiet
-2658588,Silvaplana,CH,"46.458099,9.79514",San Moritz
-2658589,Sils im Engadin/Segl,CH,"46.433331,9.76667",San Moritz
+2658588,Silvaplana,CH,"46.458099,9.79514",St. Moritz
+2658589,Sils im Engadin/Segl,CH,"46.433331,9.76667",St. Moritz
 2658590,Sils im Domleschg,CH,"46.700409,9.45404",Schams
 2658592,Silenen,CH,"46.789101,8.67325",Flüelen-Unterschächen
 2658594,Sihlbrugg Dorf,CH,"47.183331,8.58333",Zug-Knonau
@@ -377,7 +377,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2658634,Selzach,CH,"47.205311,7.45521",Lyss-Grenchen
 2658635,Seltisberg,CH,"47.459469,7.71729",Basel
 2658638,Selfranga,CH,"46.861431,9.88416",Küblis-Klosters
-2658641,Sils-Segl Maria,CH,"46.42886,9.76364",San Moritz
+2658641,Sils-Segl Maria,CH,"46.42886,9.76364",St. Moritz
 2658642,Seftigen,CH,"46.787651,7.53936",Thun-Belp
 2658646,Seewis,CH,"46.76553,9.21998",Riein-Safiental
 2658649,Seengen,CH,"47.328522,8.20509",Wohlen-Albis
@@ -456,7 +456,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2658807,Sankt Peterzell,CH,"47.317822,9.17449",Fürstenland
 2658809,Sankt Peter,CH,"46.833038,9.65091",Schanfigg
 2658811,Sankt Niklaus,CH,"46.177059,7.80307",Vispertal-Nanztal
-2658813,St. Moritz,CH,"46.498402,9.83909",San Moritz
+2658813,St. Moritz,CH,"46.498402,9.83909",St. Moritz
 2658816,Sankt Margrethen,CH,"47.45253,9.63741",St.Gallen-Rorschach
 2658820,Sankt Gallenkappel,CH,"47.246681,8.97388",Linthebene-Gaster
 2658821,Kanton St. Gallen,CH,"47.25,9.25",Obertoggenburg
@@ -464,7 +464,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2658826,Sankt Antoni,CH,"46.822071,7.26091",Berne-Sense
 2658834,Sangernboden,CH,"46.713299,7.35187",Niedersimmental
 2658842,Samnaun,CH,"46.943729,10.36058",Scuol-Samnaun
-2658846,Samedan,CH,"46.534168,9.87122",San Moritz
+2658846,Samedan,CH,"46.534168,9.87122",St. Moritz
 2658847,Salvan,CH,"46.116341,7.01618",Vallée du Trient
 2658848,Salux,CH,"46.624451,9.57613",Savognin
 2658849,Salmsach,CH,"47.556961,9.36889",Amriswil
@@ -614,9 +614,9 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2659169,Portalban,CH,"46.918541,6.95576",Estavayer-Cudrefin
 2659170,Porsel,CH,"46.60083,6.86714",Oron-Haute-Broye
 2659171,Porrentruy,CH,"47.415329,7.07522",Ajoie
-2659172,Pontresina,CH,"46.495499,9.90126",San Moritz
+2659172,Pontresina,CH,"46.495499,9.90126",St. Moritz
 2659175,Ponthaux,CH,"46.815269,7.04142",Murten-Kerzers
-2659177,La Punt Chamues-ch,CH,"46.578869,9.92015",San Moritz
+2659177,La Punt Chamues-ch,CH,"46.578869,9.92015",St. Moritz
 2659178,Pont-de-Nant,CH,"46.253471,7.09751",Bex-Villars
 2659180,Pleigne,CH,"47.407581,7.29056",Laufental
 2659187,Plasselb,CH,"46.734879,7.25119",Basse-Gruyère
@@ -894,7 +894,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2659774,Mammern,CH,"47.646252,8.91519",Steckborn-Müllheim
 2659775,Malvaglia,CH,"46.412819,8.97921",Blenio
 2659776,Malters,CH,"47.036282,8.18193",Entlebuch
-2659779,Maloja,CH,"46.403481,9.69594",San Moritz
+2659779,Maloja,CH,"46.403481,9.69594",St. Moritz
 2659781,Malleray,CH,"47.238392,7.27286",Moutier-Tavannes
 2659784,Malans,CH,"46.980961,9.57527",Landquart-Chur
 2659786,Maisprach,CH,"47.524578,7.84705",Rheinfelden
@@ -1586,7 +1586,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 2661233,Cernier,CH,"47.058781,6.9004",Val de Ruz - Colombier
 2661234,Cerniat,CH,"46.634159,7.15884",Jogne-Haute-Gruyère
 2661240,Céligny,CH,"46.350689,6.195",Nyon-terre sainte
-2661241,Celerina,CH,"46.514519,9.8583",San Moritz
+2661241,Celerina,CH,"46.514519,9.8583",St. Moritz
 2661242,Cazis,CH,"46.72308,9.42881",Domleschg
 2661247,Caux,CH,"46.432411,6.93855",Préalpes vaudoises
 2661252,Castiel,CH,"46.839378,9.60361",Schanfigg
@@ -3954,7 +3954,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 6613919,Valdoie,FR,"47.666672,6.85",Territoire de Belfort
 6615236,Bois-d'Amont,FR,"46.533329,6.15",Vallée de Joux
 6615253,Veigy-Foncenex,FR,"46.26667,6.25",Haute-Savoie
-6615395,-,CH,"47.457748,8.555775",Zurzach-Bülach
+6615395,Zürich Flughafen,CH,"47.457748,8.555775",Zurzach-Bülach
 6615513,Bern - Belp Airport,CH,"46.913429,7.50053",Thun-Belp
 6615625,Montréal-la-Cluse,FR,"46.187099,5.5709",Ain
 6615636,Thoiry,FR,"46.236599,5.9804",Ain
@@ -4014,7 +4014,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7115592,Döttingen,CH,"47.570911,8.25846",Frick-Leibstadt
 7157095,Zürich (Kreis 6),CH,"47.380482,8.54749",Thalwil-Wetzikon
 7284995,Landquart District,CH,"46.959419,9.55472",Landquart-Chur
-7284997,Maloja District,CH,"46.491119,9.77932",San Moritz
+7284997,Maloja District,CH,"46.491119,9.77932",St. Moritz
 7284998,Moesa District,CH,"46.346199,9.17679",Basso Moesano
 7284999,Surselva District,CH,"46.69297,9.01569",Brigels
 7285000,Wahlkreis Rheintal,CH,"47.377689,9.57903",Rheintal
@@ -4268,7 +4268,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7285443,Casti-Wergenstein,CH,"46.615929,9.35401",Schams
 7285445,Cauco,CH,"46.333641,9.12209",Basso Moesano
 7285449,Cazis,CH,"46.73716,9.42665",Domleschg
-7285450,Celerina/Schlarigna,CH,"46.509579,9.84396",San Moritz
+7285450,Celerina/Schlarigna,CH,"46.509579,9.84396",St. Moritz
 7285451,Céligny,CH,"46.351879,6.19042",Nyon-terre sainte
 7285456,Cernier,CH,"47.076172,6.90063",Val de Ruz - Colombier
 7285458,Cevio,CH,"46.3783,8.54233",Alta Valmaggia
@@ -4744,7 +4744,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7286263,Langwies,CH,"46.823292,9.7462",Schanfigg
 7286264,Lantsch/Lenz,CH,"46.70697,9.57941",Schams
 7286265,La Praz,CH,"46.669739,6.42435",Vallée de Joux
-7286266,La Punt-Chamues-ch,CH,"46.550831,9.93022",San Moritz
+7286266,La Punt-Chamues-ch,CH,"46.550831,9.93022",St. Moritz
 7286268,La Roche,CH,"46.692661,7.16082",Basse-Gruyère
 7286269,La Sagne,CH,"47.047298,6.80193",Val de Ruz - Colombier
 7286270,La Sarraz,CH,"46.65448,6.50482",Plaine de l‘Orbe
@@ -5039,7 +5039,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7286805,Pleigne,CH,"47.417469,7.2845",Laufental
 7286814,Pont-en-Ogoz,CH,"46.68829,7.07683",Basse-Gruyère
 7286816,Ponthaux,CH,"46.816971,7.04727",Murten-Kerzers
-7286818,Pontresina,CH,"46.441132,9.95759",San Moritz
+7286818,Pontresina,CH,"46.441132,9.95759",St. Moritz
 7286819,Porrentruy,CH,"47.421291,7.07098",Ajoie
 7286822,Port-Valais,CH,"46.36763,6.85829",Vouvry
 7286824,Poschiavo,CH,"46.352558,10.06077",Poschiavo
@@ -5166,7 +5166,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7287045,Salouf,CH,"46.612381,9.53296",Savognin
 7287046,Salvan,CH,"46.110271,6.95991",Vallée du Trient
 7287047,Salvenach,CH,"46.91412,7.15229",Murten-Kerzers
-7287048,Samedan,CH,"46.465851,9.85747",San Moritz
+7287048,Samedan,CH,"46.465851,9.85747",St. Moritz
 7287049,Samnaun,CH,"46.952221,10.36647",Scuol-Samnaun
 7287053,Sargans,CH,"47.055618,9.44881",Sarganserland
 7287054,Sarmenstorf,CH,"47.311329,8.2527",Wohlen-Albis
@@ -5239,7 +5239,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7287170,Sigriswil,CH,"46.735291,7.74775",Schangnau-Sigriswil
 7287171,Silenen,CH,"46.776932,8.75168",Maderanertal
 7287172,Sils im Domleschg,CH,"46.690769,9.46489",Schams
-7287173,Silvaplana,CH,"46.462589,9.78604",San Moritz
+7287173,Silvaplana,CH,"46.462589,9.78604",St. Moritz
 7287174,Simplon,CH,"46.2029,8.03625",südliches Simplongebiet
 7287175,Sins,CH,"47.190651,8.39561",Emmen-Hochdorf
 7287176,Sion,CH,"46.23045,7.36606",Conthey-Fully
@@ -5286,7 +5286,7 @@ id_openweathermap,Ort,country,Koordinaten,Region
 7287240,St. Gallen,CH,"47.422138,9.37554",St.Gallen-Rorschach
 7287241,St. Gallenkappel,CH,"47.268532,9.00014",Linthebene-Gaster
 7287243,St. Margrethen,CH,"47.4533,9.62598",St.Gallen-Rorschach
-7287245,St. Moritz,CH,"46.490341,9.81688",San Moritz
+7287245,St. Moritz,CH,"46.490341,9.81688",St. Moritz
 7287246,St. Niklaus,CH,"46.157318,7.80044",Vispertal-Nanztal
 7287247,St. Peter-Pagig,CH,"46.848888,9.64956",Schanfigg
 7287248,Strengelbach,CH,"47.281799,7.92268",Zofingen-Triengen

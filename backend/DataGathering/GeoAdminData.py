@@ -147,6 +147,7 @@ def main():
         weather_df = weather_df.rename(columns=mapping)
         weather_df = weather_df[weather_df['Koordinaten'] != 'nan,nan']
         weather_df = weather_df.drop(columns=['Kürzel', 'Stationstyp'])
+        weather_df = weather_df[weather_df['Ort']!="Eggishorn"]
         weather_df = weather_df.apply(get_region, axis=1)
         geoadmin_stations = weather_df[['Ort', 'Koordinaten','Region']].drop_duplicates()
         

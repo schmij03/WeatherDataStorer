@@ -55,6 +55,7 @@ def job():
     # Funktion zum Abrufen aktueller Wetterdaten
     def get_current_data(allstations):
         allstations = allstations[allstations['country'] != 'CH']
+        allstations = allstations[allstations['country'] != 'LI']
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         rounded_time = datetime.strptime(current_time, "%Y-%m-%d %H:%M:%S").replace(minute=0, second=0, microsecond=0)
         stations_meteostat = allstations[allstations['id_meteostat'].notna()]
@@ -63,7 +64,7 @@ def job():
         stations_openweather = allstations[allstations['id_openweathermap'].notna()]
         openweather_final = fetch_weatherdata_current(stations_openweather)
         all_weather_data = empty_df
-        all_weather_data = pd.merge(weather_geoadmin_df, openweather_final, on='Koordinaten', how='outer', suffixes=('_meteos', '_openweather'))
+        all_weather_data = pd.merge(meteostat_final, openweather_final, on='Koordinaten', how='outer', suffixes=('_meteos', '_openweather'))
         all_weather_data = all_weather_data.drop_duplicates()
         all_weather_data = all_weather_data[1:]
         all_weather_data = merge_data(all_weather_data)
@@ -74,7 +75,9 @@ def job():
     # Funktion zum Abrufen stündlicher Wetterdaten für die Schweiz
     def get_hourly_dataCH(allstations, rounded_hour):
         current_hour = datetime.now().hour
-        allstations = allstations[allstations['country'] == 'CH' or allstations['country'] == 'LI']
+        a=allstations[allstations['country'] == 'LI']
+        allstations = allstations[allstations['country'] == 'CH']
+        allstations=pd.merge(allstations, a, how='outer')
         stations_meteostat = allstations[allstations['id_meteostat'].notna()]
         stations_openweather = allstations[allstations['id_openweathermap'].notna()]
         all_weather_data = empty_df
@@ -91,12 +94,11 @@ def job():
             all_weather_data = all_weather_data.drop_duplicates()
         all_weather_data = all_weather_data[1:]
         all_weather_data = merge_data(all_weather_data)
-        
-        if all_weather_data['Region'] == "Liechtenstein":
-            all_weather_data['Land'] = "LI"
-        else:
-            all_weather_data['Land'] = "CH"
-        
+        a=all_weather_data[all_weather_data['Region'] == 'Liechtenstein']
+        all_weather_data=all_weather_data[all_weather_data['Region'] != 'Liechtenstein']
+        all_weather_data['Land'] = "CH"
+        a['Land'] = "LI"
+        all_weather_data = pd.merge(all_weather_data, a, how='outer')
         all_weather_data = all_weather_data.drop(columns=['Zeit'])
         all_weather_data['Zeit'] = rounded_hour        
         return all_weather_data
