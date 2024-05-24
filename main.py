@@ -74,7 +74,7 @@ def job():
     # Funktion zum Abrufen stündlicher Wetterdaten für die Schweiz
     def get_hourly_dataCH(allstations, rounded_hour):
         current_hour = datetime.now().hour
-        allstations = allstations[allstations['country'] == 'CH']
+        allstations = allstations[allstations['country'] == 'CH' or allstations['country'] == 'LI']
         stations_meteostat = allstations[allstations['id_meteostat'].notna()]
         stations_openweather = allstations[allstations['id_openweathermap'].notna()]
         all_weather_data = empty_df
@@ -91,7 +91,12 @@ def job():
             all_weather_data = all_weather_data.drop_duplicates()
         all_weather_data = all_weather_data[1:]
         all_weather_data = merge_data(all_weather_data)
-        all_weather_data['Land'] = "CH"
+        
+        if all_weather_data['Region'] == "Liechtenstein":
+            all_weather_data['Land'] = "LI"
+        else:
+            all_weather_data['Land'] = "CH"
+        
         all_weather_data = all_weather_data.drop(columns=['Zeit'])
         all_weather_data['Zeit'] = rounded_hour        
         return all_weather_data

@@ -5,7 +5,7 @@ import json
 import logging
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-
+import numpy as np
 # Einrichten des Loggings für Debugging-Zwecke
 logging.basicConfig(level=logging.DEBUG)
 
@@ -164,9 +164,9 @@ def extract_weather_details(weather_data):
         'Windgeschwindigkeit in km/h': [weather_data['wind']['speed']],
         'Windrichtung': [weather_data['wind']['deg']],
         'Wolkenbedeckung': [weather_data['clouds']['all']],
-        'Niederschlagsmenge (letzte Stunde)': [weather_data.get('rain', {}).get('1h', 'Keine Daten')],
-        'Schneefallmenge (letzte Stunde)': [weather_data.get('snow', {}).get('1h', 'Keine Daten')],
-        'Windböen': [weather_data.get('wind', {}).get('gust', 'Keine Daten')],
+        'Niederschlagsmenge (letzte Stunde)': [weather_data.get('rain', {}).get('1h', np.nan)],
+        'Schneefallmenge (letzte Stunde)': [weather_data.get('snow', {}).get('1h', np.nan)],
+        'Windböen': [weather_data.get('wind', {}).get('gust', np.nan)],
         'Sonnenaufgang': [datetime.fromtimestamp(weather_data['sys']['sunrise'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
         'Sonnenuntergang': [datetime.fromtimestamp(weather_data['sys']['sunset'], tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')],
         'Lat': [weather_data['coord']['lat']],
