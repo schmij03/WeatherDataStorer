@@ -47,8 +47,7 @@ def job():
                 main_col = pd.concat([data[col] for col in relevant_columns], axis=1).bfill(axis=1).iloc[:, 0].infer_objects()
                 data[base_col] = main_col
 
-            data.drop(relevant_columns, axis=1, inplace=True)
-        data = data.drop(columns=['Datum'])
+            data.drop(relevant_columns, axis=1, inplace=True)        
         data = data.drop_duplicates(subset=['Koordinaten'])
         return data
 
