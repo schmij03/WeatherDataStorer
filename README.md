@@ -15,8 +15,10 @@ WeatherDataStorer ist eine innovative Softwarelösung, die darauf abzielt, Wette
 
 ## Schnellstart
 1. **Repository klonen**: `git clone https://github.com/schmij03/WeatherDataStorer`
-2. **Abhängigkeiten installieren**: `pip install -r requirements.txt`
-3. **Anwendung starten**: `python main.py`
+2. **Virtual Environment erstellen**: `python -m venv venv`
+3. **Virtual Environment starten**: `venv\Scripts\activate`
+4. **Abhängigkeiten installieren**: `pip install -r requirements.txt`
+5. **Anwendung starten**: `python main.py`
 
 ## Docker Image
 1. **Docker Installieren**: Falls noch nicht vorhanden Docker installieren.
