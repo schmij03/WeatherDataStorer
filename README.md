@@ -8,6 +8,35 @@ WeatherDataStorer ist eine innovative Softwarelösung, die darauf abzielt, Wette
 - **Intuitive Datenvisualisierung**: Bietet ein interaktives Frontend, um die gespeicherten Wetterdaten ansprechend zu präsentieren.
 - **Datenverwaltung**: Implementiert eine leistungsfähige MongoDB-Datenbank zur effizienten Datenverarbeitung und -speicherung.
 
+## Verzeichnisstuktur
+Backend/
+├── .gitattributes
+├── .gitignore
+├── backend/
+│ └── DataGathering/
+│ ├── pycache/
+│ ├── Access_Information
+│ ├── AllStations_with_location_info.csv
+│ ├── bin
+│ ├── empty_weather_data.csv
+│ ├── GeoAdmin/
+│ ├── GeoAdminData.py
+│ ├── getStationInformations.py
+│ ├── mergeAllStations.py
+│ ├── Meteostat.py
+│ ├── meteostat_stations_filtered.csv
+│ ├── mongodb_connection.py
+│ ├── openweathermap.py
+│ ├── openweathermap_stations_filtered.csv
+│ ├── pwd.json
+│ ├── region_mapping.py
+│ ├── Regionsmapping/
+│ └── rendercoordinates.json
+├── Dockerfile
+├── Dockerfile raspi
+├── main.py
+├── README.md
+└── requirements.txt
 
 ## Dateien
 - `.gitattributes`: Git-Konfigurationsdatei für Attribute.
