@@ -48,7 +48,7 @@ Backend/
         - `AllStations_with_location_info.csv`: CSV-Datei mit Standortinformationen aller Stationen.
         - `bin`: Nicht benötigte Files.
         - `empty_weather_data.csv`: Leere CSV-Datei für Wetterdaten.
-        - `GeoAdmin/`: Ein Verzeichnis, das vermutlich Daten oder Skripte im Zusammenhang mit geografischen Verwaltungsdaten enthält.
+        - `GeoAdmin/`: Verzeichnis mit Stationsbeschreibungen und Informationen zum GeoAdminData.py File.
         - `GeoAdminData.py`: Python-Skript zur Handhabung von GeoAdmin-Daten.
         - `getStationInformations.py`: Python-Skript zum Abrufen von Stationsinformationen.
         - `mergeAllStations.py`: Python-Skript zum Zusammenführen von Daten aller Stationen.
