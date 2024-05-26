@@ -9,6 +9,7 @@ WeatherDataStorer ist eine innovative Softwarelösung, die darauf abzielt, Wette
 - **Datenverwaltung**: Implementiert eine leistungsfähige MongoDB-Datenbank zur effizienten Datenverarbeitung und -speicherung.
 
 ## Verzeichnisstuktur
+```
 Backend/
 ├── .gitattributes
 ├── .gitignore
@@ -37,6 +38,7 @@ Backend/
 ├── main.py
 ├── README.md
 └── requirements.txt
+```
 
 ## Dateien
 - `.gitattributes`: Git-Konfigurationsdatei für Attribute.
