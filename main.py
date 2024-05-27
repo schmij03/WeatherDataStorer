@@ -10,21 +10,18 @@ from backend.DataGathering.mergeAllStations import consolidate_weather_data
 
 
 def job():
+    print(f"Starting to gather data: {datetime.now()}")
     # Leeren DataFrame aus CSV-Datei laden
     empty_df = pd.read_csv('backend/DataGathering/empty_weather_data.csv')
 
     # Hauptfunktion aufrufen, um Zeitwert und GeoAdmin-Daten zu erhalten
     time_str, weather_geoadmin_df, geoadmin_stations = main()
-    print(f"Original time (string): {time_str}")
 
     # Konvertieren des Zeitwerts von String zu datetime-Objekt
     time_obj = datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
-    print(f"Converted time (datetime): {time_obj}")
 
     # Auf die nächste volle Stunde runden
     rounded_hour = time_obj.replace(minute=0, second=0, microsecond=0)
-    print(f"Rounded to the nearest whole hour: {rounded_hour}")
-    rounded_hour_csv = datetime.strptime(str(rounded_hour), "%Y-%m-%d %H:%M:%S").strftime("%Y%m%dT%H%M%S")
     print('GeoAdmin data gathered successfully.')
 
     # Alle Stationen aus CSV-Datei laden
@@ -113,10 +110,11 @@ def job():
     print("Starting to save data to MongoDB")
     save_to_mongodb(pd_rest)
     print('Not CH data saved successfully.')
+    print(f"Data gathering finished: {datetime.now()}")
 
 
 # Job jede Stunde ausführen
-schedule.every().hour.at(":19").do(job)
+schedule.every().hour.at(":43").do(job)
 
 # Job jeden Monat ausführen
 schedule.every(30).days.at("00:00").do(consolidate_weather_data)

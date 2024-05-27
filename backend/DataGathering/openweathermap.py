@@ -7,9 +7,6 @@ from urllib3.util.retry import Retry
 import numpy as np
 import logging
 
-# Einrichten des Loggings für Debugging-Zwecke
-logging.basicConfig(level=logging.DEBUG)
-
 # Mapping der Wetterbedingungen zu OpenWeatherMap-Wettercodes
 weatherID_mapping = {
     1: 800,   # klarer Himmel
