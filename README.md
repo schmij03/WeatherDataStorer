@@ -5,7 +5,7 @@ WeatherDataStorer ist eine innovative Lösung die darauf abzielt, Wetterdaten ef
 
 ## Hauptfunktionen
 - **Automatische Datenerfassung**: Sammelt in Echtzeit Wetterdaten von verschiedenen öffentlichen APIs.
-- **Intuitive Datenvisualisierung**: Bietet ein interaktives Frontend (github.com/schmij03/WeatherDataFrontend), um die gespeicherten Wetterdaten ansprechend zu präsentieren.
+- **Intuitive Datenvisualisierung**: Bietet ein [interaktives Frontend](github.com/schmij03/WeatherDataFrontend), um die gespeicherten Wetterdaten ansprechend zu präsentieren.
 - **Datenverwaltung**: Implementiert eine leistungsfähige MongoDB-Datenbank zur effizienten Datenverarbeitung und -speicherung.
 
 ## Verzeichnisstuktur
