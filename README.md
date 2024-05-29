@@ -1,7 +1,7 @@
 # WeatherDataStorer
 
 ## Überblick
-WeatherDataStorer ist eine innovative Softwarelösung, die darauf abzielt, Wetterdaten effizient zu sammeln, zu speichern und visuell darzustellen. Dieses Projekt verwendet moderne Technologien wie Python und JavaScript, um eine robuste Plattform für Wetterdatenanalyse zu bieten.
+WeatherDataStorer ist eine innovative Lösung die darauf abzielt, Wetterdaten effizient zu sammeln und zu speichern. Dieses Projekt wurde im Rahmen der Bachelorarbeit mit der Thematik der Aggregation historischer Wetterdatern der Schweiz und deren Nachbarsregionen erstellt.
 
 ## Hauptfunktionen
 - **Automatische Datenerfassung**: Sammelt in Echtzeit Wetterdaten von verschiedenen öffentlichen APIs.
